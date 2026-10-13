@@ -5,7 +5,6 @@ import {
   Users, CreditCard, ChevronLeft, ShieldCheck, LogOut, Video
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { Header } from './Header';
 
 export const AdminLayout: React.FC = () => {
   const { user, isAdmin, isLoading, logout } = useAuth();
@@ -31,21 +30,29 @@ export const AdminLayout: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Universal Site Header */}
-      <Header />
-
-      <div className="flex-1 bg-slate-100 flex flex-col md:flex-row">
-        {/* Sidebar */}
-        <aside className="w-full md:w-64 bg-brand-navy text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800">
-          <div>
-            {/* Top Admin Badge */}
-            <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-              <span className="text-xs font-bold text-white uppercase tracking-wider">Panou Administrare</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-brand-green/20 text-brand-green px-2 py-0.5 rounded">
-                ADMIN
-              </span>
-            </div>
+    <div className="min-h-screen bg-slate-100 flex flex-col md:flex-row">
+      {/* Sidebar */}
+      <aside className="w-full md:w-64 bg-brand-navy text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800 min-h-screen">
+        <div>
+          {/* Brand & Admin Badge */}
+          <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+            <Link to="/admin" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-brand-green flex items-center justify-center text-white font-serif font-bold text-base shadow-sm">
+                N
+              </div>
+              <div>
+                <span className="font-serif font-bold text-base text-white tracking-tight block leading-tight">
+                  Nurs<span className="text-brand-green">Lab</span>
+                </span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Panou Administrare
+                </span>
+              </div>
+            </Link>
+            <span className="text-[10px] font-bold uppercase tracking-wider bg-brand-green/20 text-brand-green px-2 py-0.5 rounded">
+              ADMIN
+            </span>
+          </div>
 
           {/* Navigation Links */}
           <nav className="p-3 space-y-1">
@@ -92,8 +99,6 @@ export const AdminLayout: React.FC = () => {
       <main className="flex-1 p-6 sm:p-10 overflow-y-auto">
         <Outlet />
       </main>
-
-      </div>
     </div>
   );
 };
