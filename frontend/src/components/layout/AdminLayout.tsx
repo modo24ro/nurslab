@@ -2,9 +2,10 @@ import React from 'react';
 import { Link, useLocation, Navigate, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, FileEdit, BookOpen, MapPin, HeartHandshake,
-  Users, CreditCard, ChevronLeft, ShieldCheck, LogOut
+  Users, CreditCard, ChevronLeft, ShieldCheck, LogOut, Video
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { Header } from './Header';
 
 export const AdminLayout: React.FC = () => {
   const { user, isAdmin, isLoading, logout } = useAuth();
@@ -22,6 +23,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Panou Principal', to: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
     { label: 'Editor Conținut CMS', to: '/admin/cms', icon: <FileEdit className="w-4 h-4" /> },
     { label: 'Cursuri & Lecții', to: '/admin/courses', icon: <BookOpen className="w-4 h-4" /> },
+    { label: 'Webinarii & Invitați', to: '/admin/webinars', icon: <Video className="w-4 h-4" /> },
     { label: 'Workshopuri Locale', to: '/admin/workshops', icon: <MapPin className="w-4 h-4" /> },
     { label: 'Îngrijiri la Domiciliu', to: '/admin/home-nursing', icon: <HeartHandshake className="w-4 h-4" /> },
     { label: 'Utilizatori & Roluri', to: '/admin/users', icon: <Users className="w-4 h-4" /> },
@@ -29,20 +31,21 @@ export const AdminLayout: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col md:flex-row">
-      
-      {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-brand-navy text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800">
-        <div>
-          {/* Top Logo */}
-          <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-            <Link to="/" className="bg-white p-1.5 rounded-lg inline-block">
-              <img src="/NursLab_logo.svg" alt="NursLab" className="h-7 w-auto" />
-            </Link>
-            <span className="text-[10px] font-bold uppercase tracking-wider bg-brand-green/20 text-brand-green px-2 py-0.5 rounded">
-              ADMIN
-            </span>
-          </div>
+    <div className="flex flex-col min-h-screen">
+      {/* Universal Site Header */}
+      <Header />
+
+      <div className="flex-1 bg-slate-100 flex flex-col md:flex-row">
+        {/* Sidebar */}
+        <aside className="w-full md:w-64 bg-brand-navy text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800">
+          <div>
+            {/* Top Admin Badge */}
+            <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+              <span className="text-xs font-bold text-white uppercase tracking-wider">Panou Administrare</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-brand-green/20 text-brand-green px-2 py-0.5 rounded">
+                ADMIN
+              </span>
+            </div>
 
           {/* Navigation Links */}
           <nav className="p-3 space-y-1">
@@ -90,6 +93,7 @@ export const AdminLayout: React.FC = () => {
         <Outlet />
       </main>
 
+      </div>
     </div>
   );
 };

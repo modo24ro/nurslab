@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, MessageSquare, Sparkles, Users, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { api } from '../services/api';
+import { CMSSection } from '../types';
 import { HolisticCareSection } from '../components/home/HolisticCareSection';
 
 export const HolisticCarePage: React.FC = () => {
+  const [holisticCms, setHolisticCms] = useState<CMSSection | undefined>();
+
+  useEffect(() => {
+    api.getPublicCMS()
+      .then((data) => {
+        if (data?.sections) {
+          const found = data.sections.find((s: CMSSection) => s.section_key === 'holistic_care');
+          if (found) setHolisticCms(found);
+        }
+      })
+      .catch(() => {});
+  }, []);
   return (
     <div className="bg-brand-sand min-h-screen py-10 sm:py-14 space-y-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 space-y-12">
         
         {/* Header */}
         <div className="max-w-3xl space-y-3">
@@ -82,8 +96,8 @@ export const HolisticCarePage: React.FC = () => {
 
         </div>
 
-        {/* Holistic Care Overview Component */}
-        <HolisticCareSection />
+        {/* Holistic Care Overview Component with live CMS data */}
+        <HolisticCareSection cmsData={holisticCms} />
 
       </div>
     </div>

@@ -12,7 +12,8 @@ export const CoursesPage: React.FC = () => {
 
   const selectedCategory = searchParams.get('category') || '';
   const isFreeOnly = searchParams.get('free') === 'true';
-  const searchQuery = searchParams.get('search') || '';
+  const rawSearch = searchParams.get('search') || '';
+  const searchQuery = rawSearch.trim();
 
   useEffect(() => {
     api.getCategories().then(setCategories).catch(() => {});
@@ -53,7 +54,7 @@ export const CoursesPage: React.FC = () => {
 
   return (
     <div className="bg-brand-sand min-h-screen py-10 sm:py-14">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 space-y-10">
         
         {/* Page Header */}
         <div className="max-w-3xl space-y-3">

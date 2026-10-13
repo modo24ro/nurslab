@@ -12,7 +12,7 @@ import { MedicalWorldSection } from '../components/home/MedicalWorldSection';
 
 export const HomePage: React.FC = () => {
   const [sectionsMap, setSectionsMap] = useState<Record<string, CMSSection>>({});
-  const [isLoading, setIsLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   useEffect(() => {
     api.getPublicCMS()
@@ -29,35 +29,43 @@ export const HomePage: React.FC = () => {
         console.warn('CMS load notice:', err);
       })
       .finally(() => {
-        setIsLoading(false);
+        setHasLoaded(true);
       });
   }, []);
+
+  // Helper to determine if a section should be rendered based on CMS visibility
+  const isVisible = (key: string): boolean => {
+    // If CMS data is not yet loaded, or if request failed completely, fallback to true
+    if (!hasLoaded || Object.keys(sectionsMap).length === 0) return true;
+    // When CMS is loaded, only render sections that are present and marked visible
+    return key in sectionsMap && sectionsMap[key]?.is_visible !== false;
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* 1. Hero Section */}
-      <HeroSection cmsData={sectionsMap['hero']} />
+      {isVisible('hero') && <HeroSection cmsData={sectionsMap['hero']} />}
 
       {/* 2. Learning Paths Section ("Alege cum începi") */}
-      <LearningPathsSection cmsData={sectionsMap['learning_paths']} />
+      {isVisible('learning_paths') && <LearningPathsSection cmsData={sectionsMap['learning_paths']} />}
 
       {/* 3. Learning Journey Section ("Parcursul tău NursLab") */}
-      <LearningJourneySection cmsData={sectionsMap['learning_journey']} />
+      {isVisible('learning_journey') && <LearningJourneySection cmsData={sectionsMap['learning_journey']} />}
 
       {/* 4. Local Workshops Section ("Adu practica în orașul tău") */}
-      <LocalWorkshopsSection cmsData={sectionsMap['local_workshops']} />
+      {isVisible('local_workshops') && <LocalWorkshopsSection cmsData={sectionsMap['local_workshops']} />}
 
       {/* 5. Home Nursing Section ("Îngrijiri la domiciliu") */}
-      <HomeNursingSection cmsData={sectionsMap['home_nursing']} />
+      {isVisible('home_nursing') && <HomeNursingSection cmsData={sectionsMap['home_nursing']} />}
 
       {/* 6. Holistic Care Section ("Abordarea holistică a îngrijirii pacienților") */}
-      <HolisticCareSection cmsData={sectionsMap['holistic_care']} />
+      {isVisible('holistic_care') && <HolisticCareSection cmsData={sectionsMap['holistic_care']} />}
 
       {/* 7. Guests & Webinars Section ("Invitați NursLab") */}
-      <GuestsWebinarsSection cmsData={sectionsMap['guests_webinars']} />
+      {isVisible('guests_webinars') && <GuestsWebinarsSection cmsData={sectionsMap['guests_webinars']} />}
 
       {/* 8. Medical World Section ("Lumea medicală") */}
-      <MedicalWorldSection cmsData={sectionsMap['medical_world']} />
+      {isVisible('medical_world') && <MedicalWorldSection cmsData={sectionsMap['medical_world']} />}
     </div>
   );
 };

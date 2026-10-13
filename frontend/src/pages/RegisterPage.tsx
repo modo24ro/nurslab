@@ -43,7 +43,7 @@ export const RegisterPage: React.FC = () => {
         {/* Header */}
         <div className="text-center space-y-2">
           <Link to="/" className="inline-block">
-            <img src="/NursLab_logo.svg" alt="NursLab Logo" className="h-10 mx-auto" />
+            <img src="/NursLab_logo.svg" alt="NursLab Logo" className="h-14 sm:h-16 mx-auto object-contain hover:scale-[1.02] transition-transform" />
           </Link>
           <h1 className="text-2xl font-serif font-bold text-brand-navy pt-2">
             Creează Cont NursLab

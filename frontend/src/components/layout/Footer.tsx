@@ -16,13 +16,13 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="bg-brand-navy text-slate-300 pt-16 pb-12 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8 pb-12 border-b border-slate-800">
           
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="inline-block bg-white p-2 rounded-xl">
-              <img src="/NursLab_logo.svg" alt="NursLab Logo" className="h-9 w-auto" />
+            <Link to="/" className="inline-block bg-white p-2.5 sm:p-3 rounded-2xl shadow-sm hover:scale-[1.02] transition-transform">
+              <img src="/NursLab_logo.svg" alt="NursLab Logo" className="h-11 sm:h-12 w-auto object-contain" />
             </Link>
             <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
               Platformă medicală de e-learning și instruire practică pentru asistenți medicali, studenți și profesioniști din domeniul sănătății. Învață. Exersează. Aplică.

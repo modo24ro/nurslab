@@ -21,7 +21,7 @@ export const ArticlesPage: React.FC = () => {
 
   return (
     <div className="bg-brand-sand min-h-screen py-10 sm:py-14 space-y-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 space-y-10">
         
         {/* Header */}
         <div className="max-w-3xl space-y-3">
@@ -84,7 +84,7 @@ export const ArticlesPage: React.FC = () => {
               >
                 <div className="relative h-56 bg-slate-100 overflow-hidden">
                   <img
-                    src={art.cover_image || 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&auto=format&fit=crop&q=80'}
+                    src={art.cover_image || 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=600&auto=format&fit=crop&q=80'}
                     alt={art.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />

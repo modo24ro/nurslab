@@ -116,7 +116,7 @@ async def seed_database(db: AsyncSession):
             link_url="/courses?free=true",
             display_order=1,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/free_resources.jpg"
         ),
         CMSContentBlock(
             section_key="learning_paths",
@@ -130,7 +130,7 @@ async def seed_database(db: AsyncSession):
             link_url="/courses",
             display_order=2,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/online_courses.jpg"
         ),
         CMSContentBlock(
             section_key="learning_paths",
@@ -144,7 +144,7 @@ async def seed_database(db: AsyncSession):
             link_url="/workshops",
             display_order=3,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/workshops_nurses.jpg"
         )
     ]
     db.add_all(blocks_paths)
@@ -168,7 +168,7 @@ async def seed_database(db: AsyncSession):
             icon="book-open",
             display_order=1,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?w=500&auto=format&fit=crop&q=80"
+            image_url="/images/journey_theory.jpg"
         ),
         CMSContentBlock(
             section_key="learning_journey",
@@ -178,7 +178,7 @@ async def seed_database(db: AsyncSession):
             icon="play-circle",
             display_order=2,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&auto=format&fit=crop&q=80"
+            image_url="/images/journey_demo.jpg"
         ),
         CMSContentBlock(
             section_key="learning_journey",
@@ -188,7 +188,7 @@ async def seed_database(db: AsyncSession):
             icon="check-square",
             display_order=3,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500&auto=format&fit=crop&q=80"
+            image_url="/images/journey_feedback.jpg"
         ),
         CMSContentBlock(
             section_key="learning_journey",
@@ -198,7 +198,7 @@ async def seed_database(db: AsyncSession):
             icon="shield-check",
             display_order=4,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1584515933487-779824d29309?w=500&auto=format&fit=crop&q=80"
+            image_url="/images/journey_practice.jpg"
         ),
     ]
     db.add_all(blocks_journey)
@@ -228,7 +228,7 @@ async def seed_database(db: AsyncSession):
             "cta_label": "Solicită îngrijire",
             "cta_url": "/home-nursing",
             "microcopy": "Trimite o solicitare pentru detalii și disponibilitate.",
-            "image_url": "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=600&auto=format&fit=crop&q=80"
+            "image_url": "/images/home_nursing.jpg"
         }
     )
     db.add(sec_nursing)
@@ -311,7 +311,7 @@ async def seed_database(db: AsyncSession):
             link_url="/webinars?type=interview",
             display_order=1,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/guest_ana.jpg"
         ),
         CMSContentBlock(
             section_key="guests_webinars",
@@ -322,7 +322,7 @@ async def seed_database(db: AsyncSession):
             link_url="/webinars?type=live",
             display_order=2,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/guest_radu.jpg"
         ),
         CMSContentBlock(
             section_key="guests_webinars",
@@ -333,7 +333,7 @@ async def seed_database(db: AsyncSession):
             link_url="/webinars?type=discussion",
             display_order=3,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1581056771107-24ca5f033842?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/guest_elena.jpg"
         )
     ]
     db.add_all(blocks_guests)
@@ -360,7 +360,7 @@ async def seed_database(db: AsyncSession):
             link_url="/articles?cat=oameni-din-lumea-medicala",
             display_order=1,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/medical_world_emergency.jpg"
         ),
         CMSContentBlock(
             section_key="medical_world",
@@ -369,7 +369,7 @@ async def seed_database(db: AsyncSession):
             link_url="/articles?cat=educatie-si-cariera",
             display_order=2,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/medical_world_care.jpg"
         ),
         CMSContentBlock(
             section_key="medical_world",
@@ -378,7 +378,7 @@ async def seed_database(db: AsyncSession):
             link_url="/articles?cat=tehnologie-in-ingrijire",
             display_order=3,
             is_active=True,
-            image_url="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&auto=format&fit=crop&q=80"
+            image_url="/images/medical_world_ethics.jpg"
         )
     ]
     db.add_all(blocks_articles)
@@ -520,7 +520,7 @@ Vei învăța:
 - Ordinea corectă a eprubetelor pentru evitarea contaminării probelor
 - Identificarea complicațiilor imediate (hematom, sincope vaso-vagale) și gestionarea lor.""",
         cover_image="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop&q=80",
-        preview_video_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        preview_video_url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
         instructor_id=instructor_user.id,
         category_id=cat_practice.id,
         difficulty=CourseDifficulty.BEGINNER,
@@ -548,7 +548,7 @@ Vei învăța:
         slug="materiale-necesare-codul-culorilor",
         description="Prezentarea detaliată a sistemelor vacuumate și a aditivilor anticoagulanți (EDTA, citrat, heparină, gel separator).",
         lesson_type=LessonType.VIDEO,
-        video_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+        video_url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
         duration_minutes=18,
         is_preview=True,
         order_index=1,
@@ -735,6 +735,65 @@ Destinat asistenților medicali care activează în spitale, ambulatorii sau în
     )
     db.add(c4)
 
+    # Course 5: Critical Situations on Shift
+    c5 = Course(
+        title="Gestionarea Situațiilor Critice în Gardă",
+        slug="gestionarea-situatiilor-critice-in-garda",
+        short_description="Protocol clinic de triaj, intervenție rapidă și prioritizarea pacienților decompensați în tura de noapte și UPU.",
+        full_description="""Curs clinic specializat pentru asistenți medicali: managementul urgențelor majore, comunicare în echipă sub presiune, protocoale ABCDE și resuscitare imediată.
+
+Vei învăța:
+- Algoritmul rapid de evaluare a stabilității hemodinamice
+- Prioritizarea resurselor când gestionezi simultan mai mulți pacienți critici
+- Tehnici de comunicare SBAR cu medicii de gardă pentru decizii rapide
+- Pregătirea medicației de urgență și manevrelor de intubație / ventilație asistată.""",
+        cover_image="https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&auto=format&fit=crop&q=80",
+        preview_video_url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
+        instructor_id=instructor_user.id,
+        category_id=cat_urgency.id,
+        difficulty=CourseDifficulty.INTERMEDIATE,
+        estimated_hours=6,
+        is_free=False,
+        price=Decimal("149.00"),
+        currency="RON",
+        is_published=True,
+        featured=True,
+        has_certificate=True,
+        completion_threshold_percent=80
+    )
+    db.add(c5)
+    await db.flush()
+
+    s5_1 = CourseSection(course_id=c5.id, title="Modul 1: Algoritmul de Triaj și Prioritizare", order_index=1)
+    db.add(s5_1)
+    await db.flush()
+
+    l5_1 = Lesson(
+        section_id=s5_1.id,
+        title="1. Evaluarea ABCDE în urgențe majore",
+        slug="evaluarea-abcde-in-urgente-majore",
+        description="Abordarea sistematică a căilor aeriene, respirației și circulației.",
+        lesson_type=LessonType.VIDEO,
+        video_url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
+        duration_minutes=20,
+        is_preview=True,
+        order_index=1,
+        content_markdown="Protocolul de evaluare primară ABCDE în camera de gardă..."
+    )
+    l5_2 = Lesson(
+        section_id=s5_1.id,
+        title="2. Comunicarea în criză (SBAR) și handover eficient",
+        slug="comunicarea-in-criza-sbar",
+        description="Transmiterea informațiilor critice între asistent și medic în situații limită.",
+        lesson_type=LessonType.VIDEO,
+        video_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+        duration_minutes=25,
+        is_preview=False,
+        order_index=2,
+        content_markdown="Metoda SBAR (Situation, Background, Assessment, Recommendation)..."
+    )
+    db.add_all([l5_1, l5_2])
+
     # 8. Medical Articles ("Lumea medicală")
     art_cat1 = ArticleCategory(name="Oameni din lumea medicală", slug="oameni-din-lumea-medicala")
     art_cat2 = ArticleCategory(name="Educație și carieră", slug="educatie-si-cariera")
@@ -789,14 +848,14 @@ Fiecare tură începe cu raportul de predare: alarmele monitoarelor, valorile ga
         title="Medic Primar Medicină de Urgență",
         hospital="UPU-SMURD București",
         bio="Peste 20 de ani de experiență în medicina de urgență prespitalicească și spitalicească.",
-        photo_url="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&auto=format&fit=crop&q=80"
+        photo_url="/images/guest_radu.jpg"
     )
     spk2 = Speaker(
         full_name="Asist. Șef Dana Radu",
         title="Președinte Asociație de Nursing Clinic",
         hospital="Institutul Oncologic",
         bio="Lider în standardizarea protocoalelor de îngrijire și siguranță a pacientului.",
-        photo_url="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80"
+        photo_url="/images/guest_ana.jpg"
     )
     db.add_all([spk1, spk2])
     await db.flush()
@@ -809,7 +868,7 @@ Fiecare tură începe cu raportul de predare: alarmele monitoarelor, valorile ga
         badge="LIVE",
         scheduled_at=datetime.now(timezone.utc) + timedelta(days=4, hours=5),
         duration_minutes=90,
-        cover_image="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600&auto=format&fit=crop&q=80",
+        cover_image="/images/guest_radu.jpg",
         speaker_id=spk1.id,
         is_free=True
     )
@@ -821,10 +880,10 @@ Fiecare tură începe cu raportul de predare: alarmele monitoarelor, valorile ga
         badge="INTERVIU",
         scheduled_at=datetime.now(timezone.utc) - timedelta(days=3),
         duration_minutes=60,
-        cover_image="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&auto=format&fit=crop&q=80",
+        cover_image="/images/guest_ana.jpg",
         speaker_id=spk2.id,
         is_free=True,
-        recording_url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        recording_url="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4"
     )
     db.add_all([web1, web2])
 

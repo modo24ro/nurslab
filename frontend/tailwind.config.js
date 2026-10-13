@@ -25,8 +25,9 @@ export default {
         }
       },
       fontFamily: {
-        serif: ['Lora', 'Merriweather', 'Georgia', 'serif'],
-        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Playfair Display"', 'Lora', 'Georgia', 'serif'],
+        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+        handwriting: ['Caveat', 'cursive'],
       },
       boxShadow: {
         card: '0 2px 12px -2px rgba(16, 43, 70, 0.06), 0 1px 3px rgba(16, 43, 70, 0.04)',

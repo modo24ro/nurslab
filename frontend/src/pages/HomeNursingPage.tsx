@@ -1,19 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Heart, ShieldCheck, CheckCircle2, Phone, Calendar, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
-import { HomeNursingService } from '../types';
+import { HomeNursingService, CMSSection } from '../types';
 import { HomeNursingSection } from '../components/home/HomeNursingSection';
 
 export const HomeNursingPage: React.FC = () => {
   const [services, setServices] = useState<HomeNursingService[]>([]);
+  const [nursingCms, setNursingCms] = useState<CMSSection | undefined>();
 
   useEffect(() => {
     api.getHomeNursingServices().then(setServices).catch(() => {});
+    api.getPublicCMS()
+      .then((data) => {
+        if (data?.sections) {
+          const found = data.sections.find((s: CMSSection) => s.section_key === 'home_nursing');
+          if (found) setNursingCms(found);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   return (
     <div className="bg-brand-sand min-h-screen py-10 sm:py-14 space-y-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 space-y-12">
         
         {/* Page Header */}
         <div className="max-w-3xl space-y-3">
@@ -55,8 +64,8 @@ export const HomeNursingPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Booking Form Banner */}
-        <HomeNursingSection />
+        {/* Booking Form Banner with CMS data */}
+        <HomeNursingSection cmsData={nursingCms} />
 
       </div>
     </div>

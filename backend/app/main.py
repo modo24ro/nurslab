@@ -18,6 +18,13 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+    # Enable diacritic-insensitive search (ș/ţ/ă/î...) used by /search and course filters
+    try:
+        async with engine.begin() as conn:
+            await conn.exec_driver_sql("CREATE EXTENSION IF NOT EXISTS unaccent")
+    except Exception as e:
+        print(f"unaccent extension notice: {e}")
+
     # Seed data
     async with AsyncSessionLocal() as session:
         try:

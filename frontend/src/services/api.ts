@@ -51,7 +51,7 @@ export const api = {
   updateMe: (data: any) => request<any>('/auth/me', { method: 'PUT', body: JSON.stringify(data) }),
 
   // CMS
-  getPublicCMS: () => request<any>('/cms/public'),
+  getPublicCMS: () => request<any>('/cms/public', { cache: 'no-cache' }),
   getNavigation: () => request<any[]>('/cms/navigation'),
   updateNavigation: (id: string, data: any) => request<any>(`/cms/navigation/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   getAllSections: () => request<any[]>('/cms/sections'),
@@ -115,10 +115,21 @@ export const api = {
   getArticleCategories: () => request<any[]>('/articles/categories'),
   getArticleBySlug: (slug: string) => request<any>(`/articles/${slug}`),
 
-  // Webinars
+  // Webinars & Speakers
   getWebinars: () => request<any[]>('/webinars/'),
   getSpeakers: () => request<any[]>('/webinars/speakers'),
+  getSpeakerDetail: (speakerId: string) => request<any>(`/webinars/speakers/${speakerId}`),
   registerWebinar: (webinarId: string) => request<any>('/webinars/register', { method: 'POST', body: JSON.stringify({ webinar_id: webinarId }) }),
+  getAdminWebinars: () => request<any[]>('/webinars/admin/all'),
+  createWebinar: (data: any) => request<any>('/webinars/', { method: 'POST', body: JSON.stringify(data) }),
+  updateWebinar: (id: string, data: any) => request<any>(`/webinars/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteWebinar: (id: string) => request<any>(`/webinars/${id}`, { method: 'DELETE' }),
+  createSpeaker: (data: any) => request<any>('/webinars/speakers', { method: 'POST', body: JSON.stringify(data) }),
+  updateSpeaker: (id: string, data: any) => request<any>(`/webinars/speakers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteSpeaker: (id: string) => request<any>(`/webinars/speakers/${id}`, { method: 'DELETE' }),
+
+  // Global Search
+  searchGlobal: (query: string) => request<any>(`/search/?q=${encodeURIComponent(query)}`),
 
   // Admin
   getAdminStats: () => request<any>('/admin/stats'),

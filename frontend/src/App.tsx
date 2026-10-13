@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
 import { Header } from './components/layout/Header';
@@ -17,6 +17,7 @@ import { WorkshopsPage } from './pages/WorkshopsPage';
 import { HomeNursingPage } from './pages/HomeNursingPage';
 import { HolisticCarePage } from './pages/HolisticCarePage';
 import { WebinarsPage } from './pages/WebinarsPage';
+import { GuestsPage } from './pages/GuestsPage';
 import { ArticlesPage } from './pages/ArticlesPage';
 import { ArticleDetailPage } from './pages/ArticleDetailPage';
 import { CheckoutPage } from './pages/CheckoutPage';
@@ -27,6 +28,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminCMSPage } from './pages/admin/AdminCMSPage';
 import { AdminCoursesPage } from './pages/admin/AdminCoursesPage';
+import { AdminWebinarsPage } from './pages/admin/AdminWebinarsPage';
 import { AdminWorkshopsPage } from './pages/admin/AdminWorkshopsPage';
 import { AdminHomeNursingPage } from './pages/admin/AdminHomeNursingPage';
 import { AdminUsersPage } from './pages/admin/AdminUsersPage';
@@ -66,6 +68,8 @@ export const App: React.FC = () => {
               <Route path="/home-nursing" element={<HomeNursingPage />} />
               <Route path="/holistic" element={<HolisticCarePage />} />
               <Route path="/webinars" element={<WebinarsPage />} />
+              <Route path="/invitati" element={<GuestsPage />} />
+              <Route path="/guests" element={<GuestsPage />} />
               <Route path="/articles" element={<ArticlesPage />} />
               <Route path="/articles/:slug" element={<ArticleDetailPage />} />
               <Route path="/certificate/verify" element={<CertificateVerifyPage />} />
@@ -74,16 +78,17 @@ export const App: React.FC = () => {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/dashboard" element={<StudentDashboardPage />} />
+              <Route path="/pricing" element={<CheckoutPage />} />
+              <Route path="/lessons/:lessonId" element={<LessonPlayerPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
-
-            {/* Distraction-Free LMS Classroom */}
-            <Route path="/lessons/:lessonId" element={<LessonPlayerPage />} />
 
             {/* Comprehensive Admin Panel */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
               <Route path="cms" element={<AdminCMSPage />} />
               <Route path="courses" element={<AdminCoursesPage />} />
+              <Route path="webinars" element={<AdminWebinarsPage />} />
               <Route path="workshops" element={<AdminWorkshopsPage />} />
               <Route path="home-nursing" element={<AdminHomeNursingPage />} />
               <Route path="users" element={<AdminUsersPage />} />

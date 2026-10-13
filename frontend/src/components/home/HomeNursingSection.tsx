@@ -3,6 +3,8 @@ import { Home, Heart, ArrowRight, CheckCircle2, ShieldCheck, UserCheck } from 'l
 import { api } from '../../services/api';
 import { CMSSection } from '../../types';
 
+import { formatImageUrl, getImageStyle } from '../../utils/cms';
+
 interface HomeNursingProps {
   cmsData?: CMSSection;
 }
@@ -11,7 +13,9 @@ export const HomeNursingSection: React.FC<HomeNursingProps> = ({ cmsData }) => {
   const title = cmsData?.title || 'Îngrijiri la domiciliu';
   const subtitle = cmsData?.subtitle || 'Sprijin și îngrijire, în confortul casei tale.';
   const microcopy = cmsData?.metadata_json?.microcopy || 'Trimite o solicitare pentru detalii și disponibilitate.';
-  const imageUrl = cmsData?.metadata_json?.image_url || 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=800&auto=format&fit=crop&q=80';
+  const ctaLabel = cmsData?.metadata_json?.cta_label || 'Solicită îngrijire';
+  const imageUrl = formatImageUrl(cmsData?.metadata_json?.image_url || '/images/home_nursing.jpg');
+  const imageStyle = getImageStyle(cmsData?.metadata_json, 'center 15%');
 
   const [modalOpen, setModalOpen] = useState(false);
   const [fullName, setFullName] = useState('');
@@ -57,28 +61,24 @@ export const HomeNursingSection: React.FC<HomeNursingProps> = ({ cmsData }) => {
   };
 
   return (
-    <section className="py-16 sm:py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-8 sm:py-12 bg-white">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         
         {/* Banner Grid Container */}
         <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#F0F7FB] to-[#F8FAF9] border border-slate-200/80 p-8 sm:p-12 lg:p-14 shadow-sm">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            {/* Left Copy & CTA */}
+                 {/* Left Copy & CTA */}
             <div className="lg:col-span-7 space-y-6">
               
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-brand-green-mint flex items-center justify-center text-brand-green">
-                  <Home className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-bold text-brand-green uppercase tracking-wider">
-                  Servicii Clinice de Nursing
-                </span>
-              </div>
-
-              <div className="space-y-2">
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy leading-tight">
-                  {title}
+              <div className="space-y-3">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy leading-tight flex items-center gap-3.5">
+                  <span>{title}</span>
+                  <span className="inline-flex items-center justify-center relative w-10 h-10 text-brand-green">
+                    <svg className="w-9 h-9 text-[#116448]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                    <Heart className="w-4 h-4 text-red-500 fill-red-500 absolute top-[11px] left-[12px]" strokeWidth={2} />
+                  </span>
                 </h2>
                 <p className="text-lg sm:text-xl text-slate-600 font-normal">
                   {subtitle}
@@ -86,31 +86,20 @@ export const HomeNursingSection: React.FC<HomeNursingProps> = ({ cmsData }) => {
               </div>
 
               {/* Action Button & Microcopy */}
-              <div className="space-y-2.5 pt-2">
-                <button
-                  onClick={() => setModalOpen(true)}
-                  className="btn-primary text-base px-7 py-3.5 shadow-md hover:shadow-lg"
-                >
-                  <span>Solicită îngrijire</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </button>
+              <div className="space-y-3 pt-2">
+                <div>
+                  <button
+                    onClick={() => setModalOpen(true)}
+                    className="btn-primary text-base px-8 py-3.5 shadow-md hover:shadow-lg rounded-full"
+                  >
+                    <span>{ctaLabel}</span>
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </button>
+                </div>
                 <p className="text-xs text-slate-500 font-medium">
                   {microcopy}
                 </p>
               </div>
-
-              {/* Trust badges */}
-              <div className="pt-2 flex flex-wrap items-center gap-5 text-xs text-slate-600">
-                <div className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-brand-green" />
-                  <span>Asistenți medicali autorizați OAMGMAMR</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <UserCheck className="w-4 h-4 text-brand-green" />
-                  <span>Respect și empatie la domiciliu</span>
-                </div>
-              </div>
-
             </div>
 
             {/* Right Photo */}
@@ -118,8 +107,9 @@ export const HomeNursingSection: React.FC<HomeNursingProps> = ({ cmsData }) => {
               <div className="relative rounded-2xl overflow-hidden shadow-xl border-4 border-white bg-slate-100">
                 <img
                   src={imageUrl}
-                  alt="Asistentă medicală oferind sprijin la domiciliu"
+                  alt={title}
                   className="w-full h-[320px] sm:h-[360px] object-cover"
+                  style={imageStyle}
                 />
               </div>
             </div>

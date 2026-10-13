@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { CMSSection } from '../../types';
+import { formatImageUrl, getImageStyle } from '../../utils/cms';
 
 interface MedicalWorldProps {
   cmsData?: CMSSection;
@@ -17,36 +18,54 @@ export const MedicalWorldSection: React.FC<MedicalWorldProps> = ({ cmsData }) =>
     {
       title: 'Oameni din lumea medicală',
       url: '/articles?category=oameni-din-lumea-medicala',
-      image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&auto=format&fit=crop&q=80',
+      image: '/images/medical_world_emergency.jpg',
+      imagePosition: 'center 15%',
+      metadata_json: { image_position: 'center 15%' },
     },
     {
       title: 'Educație și carieră',
       url: '/articles?category=educatie-si-cariera',
-      image: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=600&auto=format&fit=crop&q=80',
+      image: '/images/medical_world_care.jpg',
+      imagePosition: 'center 15%',
+      metadata_json: { image_position: 'center 15%' },
     },
     {
       title: 'Tehnologie în îngrijire',
       url: '/articles?category=tehnologie-in-ingrijire',
-      image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&auto=format&fit=crop&q=80',
+      image: '/images/medical_world_ethics.jpg',
+      imagePosition: 'center 15%',
+      metadata_json: { image_position: 'center 15%' },
     },
   ];
 
-  const cards = cmsData?.blocks && cmsData.blocks.length > 0
-    ? cmsData.blocks.map((b, i) => ({
+  const activeBlocks = (cmsData?.blocks || []).filter((b) => b.is_active !== false);
+
+  const cards = activeBlocks.length > 0
+    ? activeBlocks.map((b, i) => ({
         title: b.title,
         url: b.link_url || defaultCards[i % 3].url,
-        image: b.image_url || defaultCards[i % 3].image,
+        image: formatImageUrl(b.image_url || defaultCards[i % 3].image),
+        imageStyle: getImageStyle(b.metadata_json, defaultCards[i % 3].imagePosition || 'center 15%'),
       }))
-    : defaultCards;
+    : defaultCards.map((c) => ({
+        ...c,
+        imageStyle: getImageStyle(c.metadata_json, c.imagePosition),
+      }));
 
   return (
-    <section className="py-16 sm:py-20 bg-brand-sand border-t border-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-8 sm:py-12 bg-white">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         
-        {/* Header */}
-        <div className="max-w-3xl mb-12">
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-brand-navy">
-            {title}
+        {/* Header with Mixed Colors matching JPEG */}
+        <div className="max-w-3xl mb-8 sm:mb-10">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
+            {title.includes('medicală') ? (
+              <>
+                {title.replace('medicală', '').trim()} <span className="text-brand-green">medicală</span>
+              </>
+            ) : (
+              title
+            )}
           </h2>
           <p className="mt-2.5 text-base sm:text-lg text-slate-600">
             {subtitle}
@@ -62,37 +81,40 @@ export const MedicalWorldSection: React.FC<MedicalWorldProps> = ({ cmsData }) =>
               className="group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col"
             >
               {/* Photo */}
-              <div className="relative h-56 sm:h-60 overflow-hidden bg-slate-100">
+              <div className="relative h-60 sm:h-64 overflow-hidden bg-slate-100">
                 <img
                   src={c.image}
                   alt={c.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  style={c.imageStyle}
                 />
               </div>
 
-              {/* Title & Arrow link at bottom */}
-              <div className="p-5 flex items-center justify-between gap-3 bg-white">
-                <h3 className="font-serif font-bold text-lg text-brand-navy group-hover:text-brand-green transition-colors">
+              {/* Title & Horizontal Circle Arrow */}
+              <div className="p-5 sm:p-6 flex items-center justify-between gap-3 bg-white">
+                <h3 className="font-serif font-bold text-lg sm:text-xl text-brand-navy group-hover:text-brand-green transition-colors leading-snug">
                   {c.title}
                 </h3>
-                <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-500 group-hover:text-brand-green group-hover:border-brand-green transition-all shrink-0">
-                  <ArrowUpRight className="w-4 h-4" />
+                <div className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-brand-green group-hover:border-brand-green transition-all shrink-0">
+                  <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </Link>
           ))}
         </div>
 
-        {/* Button */}
-        <div className="text-center mt-12">
-          <Link
-            to={ctaUrl}
-            className="btn-primary text-sm font-semibold px-7 py-3"
-          >
-            <span>{ctaLabel}</span>
-            <ArrowRight className="w-4 h-4 ml-1" />
-          </Link>
-        </div>
+        {/* Center Green Button matching JPEG */}
+        {ctaLabel && (
+          <div className="text-center mt-8 sm:mt-10">
+            <Link
+              to={ctaUrl}
+              className="btn-primary text-sm sm:text-base font-semibold px-8 py-3.5 rounded-full shadow-md hover:shadow-lg inline-flex items-center gap-2"
+            >
+              <span>{ctaLabel}</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
 
       </div>
     </section>

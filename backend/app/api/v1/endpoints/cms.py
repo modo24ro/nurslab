@@ -2,6 +2,7 @@ from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm.attributes import flag_modified
 from app.core.database import get_db
 from app.models.cms import CMSSection, CMSContentBlock, NavigationItem, SiteSetting
 from app.schemas.cms import (
@@ -111,6 +112,8 @@ async def update_cms_section(
 
     for k, v in update_in.model_dump(exclude_unset=True).items():
         setattr(section, k, v)
+    if "metadata_json" in update_in.model_dump(exclude_unset=True):
+        flag_modified(section, "metadata_json")
     await db.commit()
     await db.refresh(section)
     return CMSSectionResponse.model_validate(section)
@@ -129,6 +132,8 @@ async def update_cms_block(
 
     for k, v in update_in.model_dump(exclude_unset=True).items():
         setattr(block, k, v)
+    if "metadata_json" in update_in.model_dump(exclude_unset=True):
+        flag_modified(block, "metadata_json")
     await db.commit()
     await db.refresh(block)
     return CMSContentBlockResponse.model_validate(block)

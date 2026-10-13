@@ -4,35 +4,40 @@
 
 @layer base {
   body {
-    background-color: #FBFBFA;
+    background-color: #FFFFFF;
     color: #1E293B;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 
   h1, h2, h3, .font-serif {
-    font-family: 'Lora', 'Merriweather', Georgia, serif;
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-handwriting {
+    font-family: 'Caveat', cursive;
   }
 }
 
 /* Custom smooth transitions & animations */
 .btn-primary {
-  @apply bg-brand-green hover:bg-brand-green-dark text-white font-medium px-5 py-2.5 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-[0.98];
+  @apply bg-[#116448] hover:bg-[#0D4E38] text-white font-medium px-6 py-2.5 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-[0.98];
 }
 
 .btn-secondary {
-  @apply bg-white hover:bg-slate-50 text-brand-navy border border-slate-200 font-medium px-5 py-2.5 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-[0.98];
+  @apply bg-white hover:bg-slate-50 text-brand-navy border border-slate-200 font-medium px-6 py-2.5 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-[0.98];
 }
 
 .badge-mint {
-  @apply bg-[#EBF5F0] text-brand-green text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider;
+  @apply bg-[#E8F5E9] text-[#116448] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider;
 }
 
 .badge-coral {
-  @apply bg-[#FFF0ED] text-brand-red text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider;
+  @apply bg-[#FFEAE6] text-[#E03A3A] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider;
 }
 
 .badge-sky {
-  @apply bg-[#F0F7FB] text-[#0284C7] text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider;
+  @apply bg-[#E0F2FE] text-[#0284C7] text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider;
 }
 
 /* Custom scrollbars */

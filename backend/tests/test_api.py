@@ -245,3 +245,85 @@ async def test_certificate_verification_endpoint(client: AsyncClient):
     assert res.status_code == 200
     data = res.json()
     assert data["is_valid"] is False
+
+@pytest.mark.asyncio
+async def test_cms_section_and_block_update_with_image_framing(client: AsyncClient):
+    # 1. Login as Admin
+    admin_login = await client.post("/api/v1/auth/login", json={
+        "email": "admin@nurslab.ro",
+        "password": "Admin123!"
+    })
+    assert admin_login.status_code == 200
+    admin_token = admin_login.json()["access_token"]
+    headers = {"Authorization": f"Bearer {admin_token}"}
+
+    # 2. Get sections
+    sec_res = await client.get("/api/v1/cms/sections", headers=headers)
+    assert sec_res.status_code == 200
+    sections = sec_res.json()
+    assert len(sections) > 0
+
+    journey_sec = next(s for s in sections if s["section_key"] == "learning_journey")
+    assert len(journey_sec["blocks"]) > 0
+    first_block = journey_sec["blocks"][0]
+
+    # 3. Update block with relative image URL and positioning metadata
+    new_image_url = "/images/journey_theory.jpg"
+    update_block_res = await client.put(
+        f"/api/v1/cms/blocks/{first_block['id']}",
+        json={
+            "title": "1. Înțelegi teoria (Test Actualizat)",
+            "image_url": new_image_url,
+            "metadata_json": {
+                "image_position_x": 50,
+                "image_position_y": 15,
+                "zoom": 1.25,
+                "image_position": "50% 15%",
+                "object_fit": "cover"
+            }
+        },
+        headers=headers
+    )
+    assert update_block_res.status_code == 200
+    updated_block = update_block_res.json()
+    assert updated_block["title"] == "1. Înțelegi teoria (Test Actualizat)"
+    assert updated_block["image_url"] == new_image_url
+    assert updated_block["metadata_json"]["zoom"] == 1.25
+    assert updated_block["metadata_json"]["image_position"] == "50% 15%"
+
+    # 4. Verify public CMS endpoint returns the updated content
+    pub_res = await client.get("/api/v1/cms/public")
+    assert pub_res.status_code == 200
+    pub_data = pub_res.json()
+    pub_journey = next(s for s in pub_data["sections"] if s["section_key"] == "learning_journey")
+    pub_first_block = next(b for b in pub_journey["blocks"] if b["id"] == first_block["id"])
+    assert pub_first_block["title"] == "1. Înțelegi teoria (Test Actualizat)"
+    assert pub_first_block["image_url"] == new_image_url
+    assert pub_first_block["metadata_json"]["image_position"] == "50% 15%"
+    assert pub_first_block["metadata_json"]["zoom"] == 1.25
+
+    # 5. Restore original title
+    await client.put(
+        f"/api/v1/cms/blocks/{first_block['id']}",
+        json={
+            "title": "1. Înțelegi teoria",
+            "image_url": "/images/journey_theory.jpg",
+            "metadata_json": {
+                "image_position_x": 50,
+                "image_position_y": 15,
+                "zoom": 1.0,
+                "image_position": "center 15%"
+            }
+        },
+        headers=headers
+    )
+
+@pytest.mark.asyncio
+async def test_cms_unauthorized_access(client: AsyncClient):
+    # Attempt update without admin token
+    res = await client.put(
+        "/api/v1/cms/sections/hero",
+        json={"title": "Hacked Title"}
+    )
+    assert res.status_code in (401, 403)
+

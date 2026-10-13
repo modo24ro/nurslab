@@ -237,6 +237,10 @@ export interface Speaker {
   photo_url?: string;
 }
 
+export interface SpeakerDetail extends Speaker {
+  webinars: Webinar[];
+}
+
 export interface Webinar {
   id: string;
   title: string;
@@ -251,6 +255,7 @@ export interface Webinar {
   is_free: boolean;
   recording_url?: string;
   is_registered?: boolean;
+  is_published?: boolean;
 }
 
 export interface Certificate {

@@ -1,7 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, or_, func
+from sqlalchemy import select, or_, func, case, literal, String
 from sqlalchemy.orm import selectinload
 from app.core.database import get_db
 from app.models.course import Course, Category, CourseSection, Lesson, CourseDifficulty
@@ -41,11 +41,34 @@ async def list_courses(
         query = query.where(Course.is_free == is_free)
     if featured is not None:
         query = query.where(Course.featured == featured)
-    if search:
-        search_filter = f"%{search}%"
-        query = query.where(or_(Course.title.ilike(search_filter), Course.short_description.ilike(search_filter)))
+        
+    rank_clause = None
+    if search and search.strip():
+        clean_phrase = " ".join(search.split())  # trim + collapse whitespace
+        clean_norm = func.lower(func.unaccent(literal(clean_phrase, type_=String)))
+        title_norm = func.lower(func.unaccent(func.coalesce(Course.title, "")))
+        haystack = func.lower(func.unaccent(
+            func.concat_ws(" ",
+                func.coalesce(Course.title, ""),
+                func.coalesce(Course.short_description, ""),
+                func.coalesce(Course.full_description, "")
+            )
+        ))
+        for token in clean_phrase.split():
+            tok_norm = func.lower(func.unaccent(literal(token, type_=String)))
+            query = query.where(haystack.like(func.concat("%", tok_norm, "%")))
 
-    query = query.order_by(Course.featured.desc(), Course.created_at.desc()).limit(limit).offset(offset)
+        # Title ranking: exact phrase > title contains phrase > other matches
+        rank_clause = case(
+            (title_norm == clean_norm, 0),
+            (title_norm.like(func.concat("%", clean_norm, "%")), 1),
+            else_=2
+        )
+
+    if rank_clause is not None:
+        query = query.order_by(rank_clause, Course.featured.desc(), Course.created_at.desc()).limit(limit).offset(offset)
+    else:
+        query = query.order_by(Course.featured.desc(), Course.created_at.desc()).limit(limit).offset(offset)
     res = await db.execute(query)
     courses = res.scalars().all()
 

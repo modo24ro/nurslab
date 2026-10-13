@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, PlayCircle, Users, ArrowRight } from 'lucide-react';
 import { CMSSection } from '../../types';
+import { formatImageUrl, getImageStyle } from '../../utils/cms';
 
 interface LearningPathsProps {
   cmsData?: CMSSection;
@@ -15,9 +16,10 @@ export const LearningPathsSection: React.FC<LearningPathsProps> = ({ cmsData }) 
     {
       badge: 'GRATUIT',
       badgeClass: 'badge-mint',
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80',
-      icon: <BookOpen className="w-5 h-5 text-brand-green" />,
-      iconBg: 'bg-[#EBF5F0]',
+      image: '/images/free_resources.jpg',
+      imagePosition: 'center 15%',
+      metadata_json: { image_position: 'center 15%' },
+      icon: <BookOpen className="w-8 h-8 sm:w-9 sm:h-9 text-[#116448]" strokeWidth={1.8} />,
       title: 'Resurse gratuite',
       description: 'Lecții introductive, videoclipuri și fișe de studiu.',
       buttonLabel: 'Începe gratuit',
@@ -26,10 +28,10 @@ export const LearningPathsSection: React.FC<LearningPathsProps> = ({ cmsData }) 
     {
       badge: 'CU PLATĂ',
       badgeClass: 'badge-coral',
-      image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=600&auto=format&fit=crop&q=80',
-      hasPlayOverlay: true,
-      icon: <PlayCircle className="w-5 h-5 text-[#0284C7]" />,
-      iconBg: 'bg-[#F0F7FB]',
+      image: '/images/online_courses.jpg',
+      imagePosition: 'center 15%',
+      metadata_json: { image_position: 'center 15%' },
+      icon: <PlayCircle className="w-8 h-8 sm:w-9 sm:h-9 text-[#0284C7]" strokeWidth={1.8} />,
       title: 'Cursuri online',
       description: 'Teorie, demonstrații video și teste de verificare.',
       buttonLabel: 'Vezi cursurile',
@@ -38,9 +40,10 @@ export const LearningPathsSection: React.FC<LearningPathsProps> = ({ cmsData }) 
     {
       badge: 'CU PLATĂ',
       badgeClass: 'badge-coral',
-      image: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=600&auto=format&fit=crop&q=80',
-      icon: <Users className="w-5 h-5 text-brand-red" />,
-      iconBg: 'bg-[#FFF0ED]',
+      image: '/images/workshops_nurses.jpg',
+      imagePosition: 'center 20%',
+      metadata_json: { image_position: 'center 20%' },
+      icon: <Users className="w-8 h-8 sm:w-9 sm:h-9 text-[#E11D48]" strokeWidth={1.75} />,
       title: 'Workshopuri fizice',
       description: 'Practică supravegheată, în grupe restrânse.',
       buttonLabel: 'Vezi workshopurile',
@@ -48,30 +51,50 @@ export const LearningPathsSection: React.FC<LearningPathsProps> = ({ cmsData }) 
     },
   ];
 
-  // Merge CMS blocks if available
-  const cards = cmsData?.blocks && cmsData.blocks.length > 0
-    ? cmsData.blocks.map((b, i) => ({
+  // Merge CMS blocks if available, respecting active state
+  const activeBlocks = (cmsData?.blocks || []).filter((b) => b.is_active !== false);
+
+  const cards = activeBlocks.length > 0
+    ? activeBlocks.map((b, i) => ({
         badge: b.badge || (b.badge_variant === 'mint' ? 'GRATUIT' : 'CU PLATĂ'),
-        badgeClass: b.badge_variant === 'mint' ? 'badge-mint' : 'badge-coral',
-        image: b.image_url || defaultCards[i % 3].image,
+        badgeClass: b.badge_variant === 'mint' 
+          ? 'badge-mint' 
+          : (b.badge_variant === 'sky' 
+            ? 'bg-[#F0F7FB] text-[#0284C7] text-xs font-bold px-3 py-1 rounded-full' 
+            : 'badge-coral'),
+        image: formatImageUrl(b.image_url || defaultCards[i % 3].image),
+        imageStyle: getImageStyle(b.metadata_json, defaultCards[i % 3].imagePosition || 'center 15%'),
         hasPlayOverlay: i === 1,
-        icon: i === 0 ? <BookOpen className="w-5 h-5 text-brand-green" /> : (i === 1 ? <PlayCircle className="w-5 h-5 text-[#0284C7]" /> : <Users className="w-5 h-5 text-brand-red" />),
-        iconBg: i === 0 ? 'bg-[#EBF5F0]' : (i === 1 ? 'bg-[#F0F7FB]' : 'bg-[#FFF0ED]'),
+        icon: i === 0 
+          ? <BookOpen className="w-8 h-8 sm:w-9 sm:h-9 text-[#116448]" strokeWidth={1.8} /> 
+          : (i === 1 
+            ? <PlayCircle className="w-8 h-8 sm:w-9 sm:h-9 text-[#0284C7]" strokeWidth={1.8} /> 
+            : <Users className="w-8 h-8 sm:w-9 sm:h-9 text-[#E11D48]" strokeWidth={1.8} />),
         title: b.title,
         description: b.content || '',
-        buttonLabel: b.link_label || 'Află mai multe',
-        buttonUrl: b.link_url || '/courses',
+        buttonLabel: b.link_label || (i === 0 ? 'Începe gratuit' : (i === 1 ? 'Vezi cursurile' : 'Vezi workshopurile')),
+        buttonUrl: b.link_url || (i === 0 ? '/courses?free=true' : (i === 1 ? '/courses' : '/workshops')),
       }))
-    : defaultCards;
+    : defaultCards.map((c) => ({
+        ...c,
+        imageStyle: getImageStyle(c.metadata_json, c.imagePosition),
+        hasPlayOverlay: false,
+      }));
 
   return (
-    <section className="py-16 sm:py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-8 sm:py-12 bg-white">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-brand-navy">
-            {title}
+        {/* Section Header with Mixed Colors */}
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
+            {title.includes('cum începi') ? (
+              <>
+                {title.replace('cum începi', '').trim()} <span className="text-brand-green">cum începi</span>
+              </>
+            ) : (
+              title
+            )}
           </h2>
           <p className="mt-3 text-base sm:text-lg text-slate-600">
             {subtitle}
@@ -91,14 +114,17 @@ export const LearningPathsSection: React.FC<LearningPathsProps> = ({ cmsData }) 
                   src={card.image}
                   alt={card.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  style={card.imageStyle}
                 />
 
                 {/* Badge top-left */}
-                <div className="absolute top-4 left-4">
-                  <span className={card.badgeClass}>
-                    {card.badge}
-                  </span>
-                </div>
+                {card.badge && (
+                  <div className="absolute top-4 left-4">
+                    <span className={card.badgeClass}>
+                      {card.badge}
+                    </span>
+                  </div>
+                )}
 
                 {/* Play button overlay if applicable */}
                 {card.hasPlayOverlay && (
@@ -110,31 +136,31 @@ export const LearningPathsSection: React.FC<LearningPathsProps> = ({ cmsData }) 
                 )}
               </div>
 
-              {/* Card Body */}
+              {/* Card Body with Large Colored SVG Icon */}
               <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-5">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-full ${card.iconBg} flex items-center justify-center shrink-0`}>
+                  <div className="flex items-center gap-3.5">
+                    <div className="shrink-0">
                       {card.icon}
                     </div>
-                    <h3 className="text-xl font-serif font-bold text-brand-navy">
+                    <h3 className="font-serif font-bold text-xl sm:text-2xl text-brand-navy group-hover:text-brand-green transition-colors">
                       {card.title}
                     </h3>
                   </div>
 
-                  <p className="text-sm text-slate-600 leading-relaxed pl-12">
+                  <p className="text-sm text-slate-600 leading-relaxed font-normal">
                     {card.description}
                   </p>
                 </div>
 
-                {/* Card Button */}
+                {/* Bottom Action Button */}
                 <div className="pt-2">
                   <Link
                     to={card.buttonUrl}
-                    className="btn-primary w-full text-sm font-semibold py-2.5"
+                    className="btn-primary text-xs sm:text-sm font-semibold w-full py-3 flex items-center justify-center gap-2 rounded-xl shadow-xs"
                   >
                     <span>{card.buttonLabel}</span>
-                    <ArrowRight className="w-4 h-4 ml-1" />
+                    <ArrowRight className="w-4 h-4 ml-0.5" />
                   </Link>
                 </div>
               </div>
