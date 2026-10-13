@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="13 -10 260 260" width="256" height="256" role="img" aria-label="NursLab Icon">
+  <g id="emblema">
+    <!-- Heart with ECG line -->
+    <path fill="#DA2031" d="M143 164 C121 145 66 105 66 68 C66 28 116 18 143 55 C170 18 220 28 220 68 C220 105 165 145 143 164Z"/>
+    <path d="M75 91 H111 L124 72 L137 116 L152 61 L165 98 H211" fill="none" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Open Book Pages & Base -->
+    <path d="M52 155 C86 153 118 161 143 178 C168 161 200 153 234 155" fill="none" stroke="#102B46" stroke-width="8" stroke-linecap="round"/>
+    <path d="M143 190 C116 169 79 168 39 169 L39 181 C80 180 116 183 143 203 C170 183 206 180 247 181 L247 169 C207 168 170 169 143 190Z" fill="#102B46"/>
+    <path d="M143 208 C109 190 68 193 23 190 V200 C71 202 109 199 143 216 C177 199 215 202 263 200 V190 C218 193 177 190 143 208Z" fill="#116448"/>
+  </g>
+</svg>
