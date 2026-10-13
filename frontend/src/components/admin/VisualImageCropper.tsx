@@ -10,6 +10,15 @@ import {
   Save,
   Image as ImageIcon,
   Sparkles,
+  ArrowUpLeft,
+  ArrowUp,
+  ArrowUpRight,
+  ArrowLeft,
+  Circle,
+  ArrowRight,
+  ArrowDownLeft,
+  ArrowDown,
+  ArrowDownRight,
 } from 'lucide-react';
 import { formatImageUrl, parsePositionCoordinates } from '../../utils/cms';
 
@@ -202,17 +211,17 @@ export const VisualImageCropper: React.FC<VisualImageCropperProps> = ({
     emitChanges(50, 15, 1);
   };
 
-  // 9 Direction Presets
+  // 9 Direction Presets with unified SVG icons
   const gridDirections = [
-    { label: '↖ Sus Stg', x: 0, y: 0 },
-    { label: '⬆ Sus', x: 50, y: 0 },
-    { label: '↗ Sus Dr', x: 100, y: 0 },
-    { label: '⬅ Stânga', x: 0, y: 50 },
-    { label: '⏺ Centru', x: 50, y: 50 },
-    { label: '➡️ Dreapta', x: 100, y: 50 },
-    { label: '↙ Jos Stg', x: 0, y: 100 },
-    { label: '⬇ Jos', x: 50, y: 100 },
-    { label: '↘ Jos Dr', x: 100, y: 100 },
+    { label: 'Sus Stânga', icon: ArrowUpLeft, x: 0, y: 0 },
+    { label: 'Sus', icon: ArrowUp, x: 50, y: 0 },
+    { label: 'Sus Dreapta', icon: ArrowUpRight, x: 100, y: 0 },
+    { label: 'Stânga', icon: ArrowLeft, x: 0, y: 50 },
+    { label: 'Centru', icon: Circle, x: 50, y: 50, isCenter: true },
+    { label: 'Dreapta', icon: ArrowRight, x: 100, y: 50 },
+    { label: 'Jos Stânga', icon: ArrowDownLeft, x: 0, y: 100 },
+    { label: 'Jos', icon: ArrowDown, x: 50, y: 100 },
+    { label: 'Jos Dreapta', icon: ArrowDownRight, x: 100, y: 100 },
   ];
 
   const facePresets = [
@@ -305,21 +314,26 @@ export const VisualImageCropper: React.FC<VisualImageCropperProps> = ({
             <span className="text-[11px] font-semibold text-slate-600 block">
               Punct focal direct (9 direcții):
             </span>
-            <div className="grid grid-cols-3 gap-1.5 max-w-[220px]">
+            <div className="grid grid-cols-3 gap-1.5 max-w-[210px]">
               {gridDirections.map((dir) => {
                 const isSelected = Math.round(posX) === dir.x && Math.round(posY) === dir.y;
+                const IconComponent = dir.icon;
                 return (
                   <button
                     key={dir.label}
                     type="button"
                     onClick={() => handlePresetSelect(dir.x, dir.y)}
-                    className={`py-1.5 px-1 text-[11px] font-semibold rounded-lg border transition-all ${
+                    title={dir.label}
+                    className={`h-9 w-full flex items-center justify-center rounded-xl border transition-all ${
                       isSelected
-                        ? 'bg-brand-green text-white border-brand-green shadow-xs scale-102'
+                        ? 'bg-brand-green text-white border-brand-green shadow-xs scale-105'
                         : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
                     }`}
                   >
-                    {dir.label.split(' ')[0]}
+                    <IconComponent
+                      className={`w-4 h-4 ${dir.isCenter ? 'fill-current' : ''}`}
+                      strokeWidth={2.4}
+                    />
                   </button>
                 );
               })}
