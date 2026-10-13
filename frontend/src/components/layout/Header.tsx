@@ -40,25 +40,25 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        <div className="flex items-center justify-between h-20 gap-4">
           
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 shrink-0 focus:outline-none focus:ring-2 focus:ring-brand-green/20 rounded-lg py-1">
             <img
               src="/NursLab_logo.svg"
               alt="NursLab - Nursing Practice"
-              className="h-10 sm:h-12 w-auto object-contain transition-transform duration-200 hover:scale-[1.02]"
+              className="h-9 sm:h-10 xl:h-11 w-auto object-contain transition-transform duration-200 hover:scale-[1.02]"
             />
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <nav className="hidden lg:flex items-center gap-3.5 xl:gap-5 2xl:gap-7">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 to={link.to}
-                className={`text-[14px] font-medium transition-colors duration-150 py-1 ${
+                className={`whitespace-nowrap text-[13.5px] xl:text-[14.5px] font-medium transition-colors duration-150 py-1 ${
                   isActive(link.to)
                     ? 'text-brand-green font-semibold border-b-2 border-brand-green'
                     : 'text-slate-700 hover:text-brand-green'
@@ -70,7 +70,7 @@ export const Header: React.FC = () => {
           </nav>
 
           {/* Right Controls */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-3 xl:gap-4 shrink-0">
             
             {/* Search Trigger */}
             <button
