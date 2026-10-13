@@ -8,7 +8,7 @@ import {
   Tag, DollarSign, Globe, PlayCircle
 } from 'lucide-react';
 import { api } from '../../services/api';
-import { CourseAdmin, Category, InstructorOption } from '../../types';
+import { CourseAdmin, Category, InstructorOption, CourseSectionAdmin, LessonAdmin } from '../../types';
 import { VisualImageCropper } from '../../components/admin/VisualImageCropper';
 import { formatImageUrl, getImageStyle } from '../../utils/cms';
 
@@ -42,6 +42,31 @@ export const AdminCoursesPage: React.FC = () => {
   const [newLessonData, setNewLessonData] = useState({
     title: '',
     lesson_type: 'video' as any,
+    duration_minutes: 15,
+    is_preview: false,
+    video_url: '',
+    content_markdown: '',
+  });
+
+  // Section Edit State
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [editingSectionData, setEditingSectionData] = useState<{ title: string; description: string }>({
+    title: '',
+    description: '',
+  });
+
+  // Lesson Edit State
+  const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
+  const [editingLessonData, setEditingLessonData] = useState<{
+    title: string;
+    lesson_type: 'video' | 'article' | 'quiz' | 'workshop';
+    duration_minutes: number;
+    is_preview: boolean;
+    video_url: string;
+    content_markdown: string;
+  }>({
+    title: '',
+    lesson_type: 'video',
     duration_minutes: 15,
     is_preview: false,
     video_url: '',
@@ -405,6 +430,72 @@ export const AdminCoursesPage: React.FC = () => {
       setMessage({ type: 'success', text: 'Lecția a fost ștearsă.' });
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Eroare la ștergerea lecției.' });
+    }
+  };
+
+  // Section Editing Handlers
+  const handleStartEditSection = (sec: CourseSectionAdmin) => {
+    setEditingSectionId(sec.id);
+    setEditingSectionData({
+      title: sec.title,
+      description: sec.description || '',
+    });
+  };
+
+  const handleSaveEditSection = async (sectionId: string) => {
+    if (!editingSectionData.title.trim()) return;
+    try {
+      await api.updateCourseSection(sectionId, {
+        title: editingSectionData.title,
+        description: editingSectionData.description || undefined,
+      });
+      setEditingSectionId(null);
+      const updatedList = await api.getAdminCourses();
+      setCourses(updatedList);
+      if (editingCourse) {
+        const curr = updatedList.find((x) => x.id === editingCourse.id);
+        if (curr) setEditingCourse(curr);
+      }
+      setMessage({ type: 'success', text: 'Modulul a fost actualizat cu succes!' });
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message || 'Eroare la actualizarea modulului.' });
+    }
+  };
+
+  // Lesson Editing Handlers
+  const handleStartEditLesson = (les: LessonAdmin) => {
+    setEditingLessonId(les.id);
+    setEditingLessonData({
+      title: les.title,
+      lesson_type: les.lesson_type as any,
+      duration_minutes: les.duration_minutes || 15,
+      is_preview: les.is_preview || false,
+      video_url: les.video_url || '',
+      content_markdown: les.content_markdown || '',
+    });
+  };
+
+  const handleSaveEditLesson = async (lessonId: string) => {
+    if (!editingLessonData.title.trim()) return;
+    try {
+      await api.updateLesson(lessonId, {
+        title: editingLessonData.title,
+        lesson_type: editingLessonData.lesson_type,
+        duration_minutes: Number(editingLessonData.duration_minutes),
+        is_preview: editingLessonData.is_preview,
+        video_url: editingLessonData.video_url || undefined,
+        content_markdown: editingLessonData.content_markdown || undefined,
+      });
+      setEditingLessonId(null);
+      const updatedList = await api.getAdminCourses();
+      setCourses(updatedList);
+      if (editingCourse) {
+        const curr = updatedList.find((x) => x.id === editingCourse.id);
+        if (curr) setEditingCourse(curr);
+      }
+      setMessage({ type: 'success', text: 'Lecția a fost actualizată cu succes!' });
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message || 'Eroare la actualizarea lecției.' });
     }
   };
 
@@ -1076,7 +1167,15 @@ export const AdminCoursesPage: React.FC = () => {
                                   </p>
                                   {sec.description && <p className="text-slate-400 text-[11px]">{sec.description}</p>}
                                 </div>
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleStartEditSection(sec)}
+                                    className="p-1.5 text-slate-500 hover:text-brand-navy hover:bg-slate-200/60 rounded-lg transition-colors"
+                                    title="Editează Modul"
+                                  >
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                  </button>
                                   <button
                                     type="button"
                                     onClick={() => setActiveSectionIdForLesson(activeSectionIdForLesson === sec.id ? null : sec.id)}
@@ -1094,6 +1193,54 @@ export const AdminCoursesPage: React.FC = () => {
                                   </button>
                                 </div>
                               </div>
+
+                              {/* Form to edit this section */}
+                              {editingSectionId === sec.id && (
+                                <div className="p-4 bg-blue-50/70 border-b border-blue-100 space-y-3">
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-bold text-blue-900 text-xs">Editare Modul: {sec.title}</span>
+                                  </div>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">Titlu Modul *</label>
+                                      <input
+                                        type="text"
+                                        value={editingSectionData.title}
+                                        onChange={(e) => setEditingSectionData({ ...editingSectionData, title: e.target.value })}
+                                        placeholder="Titlu modul..."
+                                        className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-brand-green/30"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">Descriere Modul</label>
+                                      <input
+                                        type="text"
+                                        value={editingSectionData.description}
+                                        onChange={(e) => setEditingSectionData({ ...editingSectionData, description: e.target.value })}
+                                        placeholder="Descriere sumară modul..."
+                                        className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-brand-green/30"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleSaveEditSection(sec.id)}
+                                      disabled={!editingSectionData.title.trim()}
+                                      className="btn-primary text-xs px-4 py-1.5 flex items-center gap-1.5 shadow-xs"
+                                    >
+                                      <Save className="w-3.5 h-3.5" /> Salvează Modulul
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setEditingSectionId(null)}
+                                      className="btn-secondary text-xs px-3 py-1.5"
+                                    >
+                                      Anulează
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
 
                               {/* Form to add lesson inside this section */}
                               {activeSectionIdForLesson === sec.id && (
@@ -1170,34 +1317,126 @@ export const AdminCoursesPage: React.FC = () => {
                                   <p className="p-3 text-slate-400 italic text-[11px]">Nicio lecție adăugată în acest modul.</p>
                                 ) : (
                                   sec.lessons.map((les, lesIdx) => (
-                                    <div key={les.id} className="p-3 flex items-center justify-between hover:bg-slate-50/50">
-                                      <div className="flex items-center gap-2.5">
-                                        {les.lesson_type === 'video' ? (
-                                          <Video className="w-4 h-4 text-brand-green" />
-                                        ) : les.lesson_type === 'quiz' ? (
-                                          <HelpCircle className="w-4 h-4 text-purple-600" />
-                                        ) : (
-                                          <FileText className="w-4 h-4 text-blue-600" />
-                                        )}
-                                        <div>
-                                          <p className="font-semibold text-slate-800">
-                                            {secIdx + 1}.{lesIdx + 1} {les.title}
-                                          </p>
-                                          <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                                            <span>{les.duration_minutes} min</span>
-                                            {les.is_preview && <span className="text-emerald-600 font-bold">• Preview gratuit</span>}
+                                    editingLessonId === les.id ? (
+                                      <div key={les.id} className="p-4 bg-amber-50/50 border-b border-amber-200/60 space-y-3">
+                                        <div className="flex items-center justify-between">
+                                          <span className="font-bold text-amber-900 text-xs">Editare Lecție: {les.title}</span>
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                          <div className="sm:col-span-1">
+                                            <label className="block text-[11px] font-semibold text-slate-600 mb-1">Titlu lecție *</label>
+                                            <input
+                                              type="text"
+                                              value={editingLessonData.title}
+                                              onChange={(e) => setEditingLessonData({ ...editingLessonData, title: e.target.value })}
+                                              className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-brand-green/30"
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="block text-[11px] font-semibold text-slate-600 mb-1">Tip lecție</label>
+                                            <select
+                                              value={editingLessonData.lesson_type}
+                                              onChange={(e) => setEditingLessonData({ ...editingLessonData, lesson_type: e.target.value as any })}
+                                              className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs"
+                                            >
+                                              <option value="video">Video</option>
+                                              <option value="article">Articol Text</option>
+                                              <option value="quiz">Test Grilă</option>
+                                              <option value="workshop">Workshop Practic</option>
+                                            </select>
+                                          </div>
+                                          <div>
+                                            <label className="block text-[11px] font-semibold text-slate-600 mb-1">Durată (minute)</label>
+                                            <input
+                                              type="number"
+                                              min={1}
+                                              value={editingLessonData.duration_minutes}
+                                              onChange={(e) => setEditingLessonData({ ...editingLessonData, duration_minutes: Number(e.target.value) })}
+                                              className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs"
+                                            />
                                           </div>
                                         </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                          <div>
+                                            <label className="block text-[11px] font-semibold text-slate-600 mb-1">URL Video / Resursă</label>
+                                            <input
+                                              type="text"
+                                              value={editingLessonData.video_url}
+                                              onChange={(e) => setEditingLessonData({ ...editingLessonData, video_url: e.target.value })}
+                                              placeholder="ex: /media/... sau https://..."
+                                              className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-mono"
+                                            />
+                                          </div>
+                                          <div className="flex items-center pt-5">
+                                            <label className="flex items-center gap-2 cursor-pointer font-semibold text-slate-700 text-xs">
+                                              <input
+                                                type="checkbox"
+                                                checked={editingLessonData.is_preview}
+                                                onChange={(e) => setEditingLessonData({ ...editingLessonData, is_preview: e.target.checked })}
+                                                className="rounded text-brand-green w-4 h-4"
+                                              />
+                                              <span>Lecție demonstrativă gratuită (Preview liber)</span>
+                                            </label>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleSaveEditLesson(les.id)}
+                                            disabled={!editingLessonData.title.trim()}
+                                            className="btn-primary text-xs px-4 py-1.5 flex items-center gap-1.5 shadow-xs"
+                                          >
+                                            <Save className="w-3.5 h-3.5" /> Salvează Modificările
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => setEditingLessonId(null)}
+                                            className="btn-secondary text-xs px-3 py-1.5"
+                                          >
+                                            Anulează
+                                          </button>
+                                        </div>
                                       </div>
-                                      <button
-                                        type="button"
-                                        onClick={() => handleDeleteLesson(les.id)}
-                                        className="p-1 text-red-400 hover:text-red-700 rounded transition-colors"
-                                        title="Șterge lecție"
-                                      >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                      </button>
-                                    </div>
+                                    ) : (
+                                      <div key={les.id} className="p-3 flex items-center justify-between hover:bg-slate-50/50">
+                                        <div className="flex items-center gap-2.5">
+                                          {les.lesson_type === 'video' ? (
+                                            <Video className="w-4 h-4 text-brand-green" />
+                                          ) : les.lesson_type === 'quiz' ? (
+                                            <HelpCircle className="w-4 h-4 text-purple-600" />
+                                          ) : (
+                                            <FileText className="w-4 h-4 text-blue-600" />
+                                          )}
+                                          <div>
+                                            <p className="font-semibold text-slate-800">
+                                              {secIdx + 1}.{lesIdx + 1} {les.title}
+                                            </p>
+                                            <div className="flex items-center gap-2 text-[10px] text-slate-400">
+                                              <span>{les.duration_minutes} min</span>
+                                              {les.is_preview && <span className="text-emerald-600 font-bold">• Preview gratuit</span>}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleStartEditLesson(les)}
+                                            className="p-1 text-slate-500 hover:text-brand-green hover:bg-slate-100 rounded transition-colors"
+                                            title="Editează lecție"
+                                          >
+                                            <Edit2 className="w-3.5 h-3.5" />
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleDeleteLesson(les.id)}
+                                            className="p-1 text-red-400 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                                            title="Șterge lecție"
+                                          >
+                                            <Trash2 className="w-3.5 h-3.5" />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )
                                   ))
                                 )}
                               </div>
