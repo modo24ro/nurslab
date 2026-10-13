@@ -66,7 +66,7 @@ async def seed_database(db: AsyncSession):
         NavigationItem(label="Învățare online", url="/courses", order_index=1, is_visible=True),
         NavigationItem(label="Practică fizică", url="/workshops", order_index=2, is_visible=True),
         NavigationItem(label="Webinarii", url="/webinars", order_index=3, is_visible=True),
-        NavigationItem(label="Invitați", url="/webinars", order_index=4, is_visible=True),
+        NavigationItem(label="Invitați", url="/invitati", order_index=4, is_visible=True),
         NavigationItem(label="Îngrijire holistică", url="/holistic", order_index=5, is_visible=True),
         NavigationItem(label="Lumea medicală", url="/articles", order_index=6, is_visible=True),
         NavigationItem(label="Gratuit", url="/courses?free=true", order_index=7, is_visible=True),
@@ -296,7 +296,7 @@ async def seed_database(db: AsyncSession):
         display_order=7,
         metadata_json={
             "cta_label": "Descoperă invitații",
-            "cta_url": "/webinars"
+            "cta_url": "/invitati"
         }
     )
     db.add(sec_guests)
@@ -308,7 +308,7 @@ async def seed_database(db: AsyncSession):
             title="Interviuri cu specialiști",
             badge="INTERVIU",
             badge_variant="mint",
-            link_url="/webinars?type=interview",
+            link_url="/invitati",
             display_order=1,
             is_active=True,
             image_url="/images/guest_ana.jpg"
