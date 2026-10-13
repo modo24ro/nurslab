@@ -62,6 +62,7 @@ async def seed_database(db: AsyncSession):
 
     # 2. Navigation items
     nav_items = [
+        NavigationItem(label="Acasă", url="/", order_index=0, is_visible=True),
         NavigationItem(label="Învățare online", url="/courses", order_index=1, is_visible=True),
         NavigationItem(label="Practică fizică", url="/workshops", order_index=2, is_visible=True),
         NavigationItem(label="Webinarii", url="/webinars", order_index=3, is_visible=True),

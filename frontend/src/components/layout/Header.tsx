@@ -22,6 +22,7 @@ export const Header: React.FC = () => {
   };
 
   const navLinks = [
+    { label: 'Acasă', to: '/' },
     { label: 'Învățare online', to: '/courses' },
     { label: 'Practică fizică', to: '/workshops' },
     { label: 'Webinarii', to: '/webinars' },
@@ -32,6 +33,9 @@ export const Header: React.FC = () => {
   ];
 
   const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
     if (path.includes('?')) {
       return location.pathname + location.search === path;
     }
