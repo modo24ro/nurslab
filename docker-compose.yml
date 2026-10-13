@@ -1,0 +1,99 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nurslab_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nurslab_db
+      POSTGRES_USER: nurslab_user
+      POSTGRES_PASSWORD: nurslab_secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - nurslab_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nurslab_user -d nurslab_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: nurslab_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - nurslab_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nurslab_backend
+    restart: unless-stopped
+    environment:
+      - APP_NAME=NursLab - Nursing Practice
+      - ENVIRONMENT=development
+      - DEBUG=True
+      - API_V1_STR=/api/v1
+      - SECRET_KEY=dev-secret-key-change-in-production-must-be-at-least-32-chars-long!
+      - DATABASE_URL=postgresql+asyncpg://nurslab_user:nurslab_secure_password@postgres:5432/nurslab_db
+      - REDIS_URL=redis://redis:6379/0
+      - MEDIA_UPLOAD_DIR=/app/media_uploads
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - nurslab_media_uploads:/app/media_uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nurslab_celery
+    restart: unless-stopped
+    command: ["celery", "-A", "app.core.celery_app", "worker", "--loglevel=info"]
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://nurslab_user:nurslab_secure_password@postgres:5432/nurslab_db
+      - REDIS_URL=redis://redis:6379/0
+      - MEDIA_UPLOAD_DIR=/app/media_uploads
+    volumes:
+      - nurslab_media_uploads:/app/media_uploads
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A app.core.celery_app inspect ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nurslab_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  nurslab_postgres_data:
+  nurslab_redis_data:
+  nurslab_media_uploads:

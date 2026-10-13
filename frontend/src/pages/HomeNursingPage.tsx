@@ -1,0 +1,64 @@
+import React, { useState, useEffect } from 'react';
+import { Home, Heart, ShieldCheck, CheckCircle2, Phone, Calendar, ArrowRight } from 'lucide-react';
+import { api } from '../services/api';
+import { HomeNursingService } from '../types';
+import { HomeNursingSection } from '../components/home/HomeNursingSection';
+
+export const HomeNursingPage: React.FC = () => {
+  const [services, setServices] = useState<HomeNursingService[]>([]);
+
+  useEffect(() => {
+    api.getHomeNursingServices().then(setServices).catch(() => {});
+  }, []);
+
+  return (
+    <div className="bg-brand-sand min-h-screen py-10 sm:py-14 space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        
+        {/* Page Header */}
+        <div className="max-w-3xl space-y-3">
+          <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
+            Asistență Medicală Mobilă
+          </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
+            Servicii de Nursing la Domiciliu
+          </h1>
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+            Îngrijire profesionistă, empatică și sigură în confortul căminului dumneavoastră, asigurată de asistenți medicali autorizați OAMGMAMR.
+          </p>
+        </div>
+
+        {/* Services Catalog Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {services.map((s) => (
+            <div
+              key={s.id}
+              className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-4"
+            >
+              <div className="space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-brand-green-mint text-brand-green flex items-center justify-center">
+                  <Heart className="w-5 h-5" />
+                </div>
+                <h3 className="font-serif font-bold text-lg text-brand-navy">
+                  {s.title}
+                </h3>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  {s.description}
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-xs text-slate-400 font-semibold uppercase">Tarif orientativ</span>
+                <span className="text-sm font-bold text-brand-green">{s.price_estimate || 'La cerere'}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Booking Form Banner */}
+        <HomeNursingSection />
+
+      </div>
+    </div>
+  );
+};

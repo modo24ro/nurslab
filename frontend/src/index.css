@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FBFBFA;
+    color: #1E293B;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: 'Lora', 'Merriweather', Georgia, serif;
+  }
+}
+
+/* Custom smooth transitions & animations */
+.btn-primary {
+  @apply bg-brand-green hover:bg-brand-green-dark text-white font-medium px-5 py-2.5 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-[0.98];
+}
+
+.btn-secondary {
+  @apply bg-white hover:bg-slate-50 text-brand-navy border border-slate-200 font-medium px-5 py-2.5 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-[0.98];
+}
+
+.badge-mint {
+  @apply bg-[#EBF5F0] text-brand-green text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider;
+}
+
+.badge-coral {
+  @apply bg-[#FFF0ED] text-brand-red text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider;
+}
+
+.badge-sky {
+  @apply bg-[#F0F7FB] text-[#0284C7] text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
