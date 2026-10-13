@@ -60,12 +60,24 @@ export const api = {
 
   // Courses
   getCategories: () => request<any[]>('/courses/categories'),
+  getInstructors: () => request<any[]>('/courses/instructors'),
   getCourses: (params?: Record<string, string>) => {
     const qs = params ? '?' + new URLSearchParams(params).toString() : '';
     return request<any[]>(`/courses/${qs}`);
   },
   getCourseDetail: (slug: string) => request<any>(`/courses/${slug}`),
   enrollCourse: (courseId: string) => request<any>(`/courses/${courseId}/enroll`, { method: 'POST' }),
+  getAdminCourses: () => request<any[]>('/courses/admin/all'),
+  createCourse: (data: any) => request<any>('/courses/', { method: 'POST', body: JSON.stringify(data) }),
+  updateCourse: (id: string, data: any) => request<any>(`/courses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  duplicateCourse: (id: string) => request<any>(`/courses/${id}/duplicate`, { method: 'POST' }),
+  deleteCourse: (id: string) => request<any>(`/courses/${id}`, { method: 'DELETE' }),
+  createCourseSection: (courseId: string, data: any) => request<any>(`/courses/${courseId}/sections`, { method: 'POST', body: JSON.stringify(data) }),
+  updateCourseSection: (sectionId: string, data: any) => request<any>(`/courses/sections/${sectionId}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteCourseSection: (sectionId: string) => request<any>(`/courses/sections/${sectionId}`, { method: 'DELETE' }),
+  createLesson: (sectionId: string, data: any) => request<any>(`/courses/sections/${sectionId}/lessons`, { method: 'POST', body: JSON.stringify(data) }),
+  updateLesson: (lessonId: string, data: any) => request<any>(`/courses/lessons/${lessonId}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteLesson: (lessonId: string) => request<any>(`/courses/lessons/${lessonId}`, { method: 'DELETE' }),
 
   // Lessons
   getLessonDetail: (lessonId: string) => request<any>(`/lessons/${lessonId}`),

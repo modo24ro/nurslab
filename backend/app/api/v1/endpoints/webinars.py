@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
+from sqlalchemy.orm.attributes import flag_modified
 from app.core.database import get_db
 from app.models.webinar import Webinar, Speaker, WebinarRegistration
 from app.models.user import User
@@ -74,7 +75,8 @@ async def create_speaker(
         title=speaker_in.title,
         hospital=speaker_in.hospital,
         bio=speaker_in.bio,
-        photo_url=speaker_in.photo_url
+        photo_url=speaker_in.photo_url,
+        metadata_json=speaker_in.metadata_json or {}
     )
     db.add(speaker)
     await db.commit()
@@ -96,6 +98,9 @@ async def update_speaker(
     update_data = speaker_in.model_dump(exclude_unset=True)
     for field, val in update_data.items():
         setattr(speaker, field, val)
+
+    if "metadata_json" in update_data:
+        flag_modified(speaker, "metadata_json")
 
     await db.commit()
     await db.refresh(speaker)
@@ -157,7 +162,8 @@ async def list_webinars(
                 is_free=w.is_free,
                 recording_url=w.recording_url,
                 is_registered=w.id in registered_ids,
-                is_published=w.is_published
+                is_published=w.is_published,
+                metadata_json=w.metadata_json or {}
             )
         )
     return output
@@ -190,7 +196,8 @@ async def list_all_webinars_admin(
             is_free=w.is_free,
             recording_url=w.recording_url,
             is_registered=False,
-            is_published=w.is_published
+            is_published=w.is_published,
+            metadata_json=w.metadata_json or {}
         )
         for w in webinars
     ]
@@ -217,7 +224,8 @@ async def create_webinar(
         speaker_id=webinar_in.speaker_id,
         is_free=webinar_in.is_free,
         recording_url=webinar_in.recording_url,
-        is_published=webinar_in.is_published
+        is_published=webinar_in.is_published,
+        metadata_json=webinar_in.metadata_json or {}
     )
     db.add(webinar)
     await db.commit()
@@ -241,7 +249,8 @@ async def create_webinar(
         is_free=reloaded.is_free,
         recording_url=reloaded.recording_url,
         is_registered=False,
-        is_published=reloaded.is_published
+        is_published=reloaded.is_published,
+        metadata_json=reloaded.metadata_json or {}
     )
 
 @router.put("/{webinar_id}", response_model=WebinarResponse)
@@ -259,6 +268,9 @@ async def update_webinar(
     update_data = webinar_in.model_dump(exclude_unset=True)
     for field, val in update_data.items():
         setattr(webinar, field, val)
+
+    if "metadata_json" in update_data:
+        flag_modified(webinar, "metadata_json")
 
     await db.commit()
     await db.refresh(webinar)
@@ -280,7 +292,8 @@ async def update_webinar(
         is_free=reloaded.is_free,
         recording_url=reloaded.recording_url,
         is_registered=False,
-        is_published=reloaded.is_published
+        is_published=reloaded.is_published,
+        metadata_json=reloaded.metadata_json or {}
     )
 
 @router.delete("/{webinar_id}")

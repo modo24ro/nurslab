@@ -3,12 +3,20 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Search, Filter, BookOpen, Clock, Award, Star, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
 import { Course, Category } from '../types';
+import { formatImageUrl, getImageStyle } from '../utils/cms';
+import { usePageCMS } from '../utils/usePageCMS';
 
 export const CoursesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const pageCms = usePageCMS('page_courses', {
+    kicker: 'Catalog Educațional Medical',
+    title: 'Cursuri Online pentru Asistenți Medicali',
+    subtitle: 'De la proceduri fundamentale de recoltare până la protocoale avansate de terapie intensivă și resuscitare cardio-respiratorie.',
+  });
 
   const selectedCategory = searchParams.get('category') || '';
   const isFreeOnly = searchParams.get('free') === 'true';
@@ -58,15 +66,19 @@ export const CoursesPage: React.FC = () => {
         
         {/* Page Header */}
         <div className="max-w-3xl space-y-3">
-          <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
-            Catalog Educațional Medical
-          </span>
+          {pageCms.kicker && (
+            <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
+              {pageCms.kicker}
+            </span>
+          )}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
-            Cursuri Online pentru Asistenți Medicali
+            {pageCms.title}
           </h1>
-          <p className="text-base sm:text-lg text-slate-600">
-            De la proceduri fundamentale de recoltare până la protocoale avansate de terapie intensivă și resuscitare cardio-respiratorie.
-          </p>
+          {pageCms.subtitle && (
+            <p className="text-base sm:text-lg text-slate-600">
+              {pageCms.subtitle}
+            </p>
+          )}
         </div>
 
         {/* Filter & Search Bar */}
@@ -167,8 +179,9 @@ export const CoursesPage: React.FC = () => {
                 {/* Cover Image & Badges */}
                 <div className="relative h-52 bg-slate-100 overflow-hidden">
                   <img
-                    src={course.cover_image || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80'}
+                    src={formatImageUrl(course.cover_image || '/images/journey_theory.jpg')}
                     alt={course.title}
+                    style={getImageStyle(course.metadata_json)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-3 left-3 flex items-center gap-2">

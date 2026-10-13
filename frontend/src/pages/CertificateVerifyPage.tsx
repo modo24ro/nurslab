@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Search, ShieldCheck, AlertCircle, Award, Calendar, UserCheck } from 'lucide-react';
 import { api } from '../services/api';
+import { usePageCMS } from '../utils/usePageCMS';
 
 export const CertificateVerifyPage: React.FC = () => {
   const { code: urlCode } = useParams<{ code?: string }>();
   const [code, setCode] = useState(urlCode || '');
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+
+  const pageCms = usePageCMS('page_certificate', {
+    kicker: 'REGISTRU OFICIAL CERTIFICATE',
+    title: 'Verificare Certificat NursLab',
+    subtitle: 'Sistem securizat de verificare a autenticității diplomelor și certificatelor de perfecționare medicală emise de platforma NursLab.',
+  });
 
   const performVerification = (codeToVerify: string) => {
     if (!codeToVerify.trim()) return;
@@ -38,12 +45,19 @@ export const CertificateVerifyPage: React.FC = () => {
           <div className="w-12 h-12 rounded-2xl bg-brand-green-mint text-brand-green mx-auto flex items-center justify-center">
             <ShieldCheck className="w-7 h-7" />
           </div>
+          {pageCms.kicker && (
+            <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans block">
+              {pageCms.kicker}
+            </span>
+          )}
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-brand-navy">
-            Verificare Certificat NursLab
+            {pageCms.title}
           </h1>
-          <p className="text-sm sm:text-base text-slate-600 max-w-lg mx-auto">
-            Sistem securizat de verificare a autenticității diplomelor și certificatelor de perfecționare medicală emise de platforma NursLab.
-          </p>
+          {pageCms.subtitle && (
+            <p className="text-sm sm:text-base text-slate-600 max-w-lg mx-auto">
+              {pageCms.subtitle}
+            </p>
+          )}
         </div>
 
         {/* Verification Form */}

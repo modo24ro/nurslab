@@ -3,12 +3,20 @@ import { Link } from 'react-router-dom';
 import { User, Search, Video, Award, Building, Sparkles, ArrowRight, Calendar, ExternalLink } from 'lucide-react';
 import { api } from '../services/api';
 import { Speaker, Webinar } from '../types';
+import { formatImageUrl, getImageStyle } from '../utils/cms';
+import { usePageCMS } from '../utils/usePageCMS';
 
 export const GuestsPage: React.FC = () => {
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
   const [webinars, setWebinars] = useState<Webinar[]>([]);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+  const pageCms = usePageCMS('page_guests', {
+    kicker: 'Comunitate & Experți Medicali',
+    title: 'Invitați NursLab',
+    subtitle: 'Perspective și experiențe reale din practica clinică: dialoguri deschise cu medici primari, asistenți șefi, cercetători și lideri din spitalele de urgență.',
+  });
 
   useEffect(() => {
     setIsLoading(true);
@@ -46,15 +54,19 @@ export const GuestsPage: React.FC = () => {
         
         {/* Header */}
         <div className="max-w-3xl space-y-3">
-          <span className="text-xs font-bold tracking-widest text-[#1C4269] uppercase font-sans">
-            Comunitate & Experți Medicali
-          </span>
+          {pageCms.kicker && (
+            <span className="text-xs font-bold tracking-widest text-[#1C4269] uppercase font-sans">
+              {pageCms.kicker}
+            </span>
+          )}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
-            Invitați <span className="text-brand-green">NursLab</span>
+            {pageCms.title}
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            Perspective și experiențe reale din practica clinică: dialoguri deschise cu medici primari, asistenți șefi, cercetători și lideri din spitalele de urgență.
-          </p>
+          {pageCms.subtitle && (
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              {pageCms.subtitle}
+            </p>
+          )}
         </div>
 
         {/* Search & Stats Bar */}
@@ -110,9 +122,10 @@ export const GuestsPage: React.FC = () => {
                       <div className="w-20 h-20 rounded-2xl bg-slate-100 overflow-hidden border-2 border-slate-100 shrink-0 shadow-sm group-hover:scale-105 transition-transform">
                         {speaker.photo_url ? (
                           <img
-                            src={speaker.photo_url}
+                            src={formatImageUrl(speaker.photo_url)}
                             alt={speaker.full_name}
-                            className="w-full h-full object-cover object-top"
+                            style={getImageStyle(speaker.metadata_json)}
+                            className="w-full h-full object-cover"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">

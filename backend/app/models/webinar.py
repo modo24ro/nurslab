@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, String, Integer, Boolean, Text, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, Boolean, Text, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 from app.models.base import TimestampMixin, generate_uuid
@@ -13,6 +13,7 @@ class Speaker(Base, TimestampMixin):
     hospital = Column(String(255), nullable=True)
     bio = Column(Text, nullable=True)
     photo_url = Column(String(500), nullable=True)
+    metadata_json = Column(JSON, default=dict, nullable=False)
 
     webinars = relationship("Webinar", back_populates="speaker")
 
@@ -32,6 +33,7 @@ class Webinar(Base, TimestampMixin):
     is_free = Column(Boolean, default=True, nullable=False)
     recording_url = Column(String(500), nullable=True)
     is_published = Column(Boolean, default=True, nullable=False)
+    metadata_json = Column(JSON, default=dict, nullable=False)
 
     speaker = relationship("Speaker", back_populates="webinars")
     registrations = relationship("WebinarRegistration", back_populates="webinar", cascade="all, delete-orphan")

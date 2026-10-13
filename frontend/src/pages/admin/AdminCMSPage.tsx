@@ -10,15 +10,32 @@ import {
   Sparkles,
   ExternalLink,
   Plus,
+  Globe,
+  Layout,
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { CMSSection, CMSContentBlock } from '../../types';
 import { VisualImageCropper } from '../../components/admin/VisualImageCropper';
 import { formatImageUrl } from '../../utils/cms';
 
+const getPagePublicRoute = (key: string): string => {
+  switch (key) {
+    case 'page_courses': return '/courses';
+    case 'page_workshops': return '/workshops';
+    case 'page_webinars': return '/webinars';
+    case 'page_guests': return '/invitati';
+    case 'page_home_nursing': return '/home-nursing';
+    case 'page_holistic': return '/holistic';
+    case 'page_articles': return '/articles';
+    case 'page_certificate': return '/certificate/verify';
+    default: return '/';
+  }
+};
+
 export const AdminCMSPage: React.FC = () => {
   const [sections, setSections] = useState<CMSSection[]>([]);
   const [selectedSectionKey, setSelectedSectionKey] = useState<string>('hero');
+  const [activeCategoryTab, setActiveCategoryTab] = useState<'home' | 'pages'>('home');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -36,6 +53,11 @@ export const AdminCMSPage: React.FC = () => {
           const current = data.find((s) => s.section_key === selectedSectionKey) || data[0];
           setActiveSection(JSON.parse(JSON.stringify(current)));
           setSelectedSectionKey(current.section_key);
+          if (current.section_key.startsWith('page_')) {
+            setActiveCategoryTab('pages');
+          } else {
+            setActiveCategoryTab('home');
+          }
         }
       })
       .catch((err) => {
@@ -47,6 +69,11 @@ export const AdminCMSPage: React.FC = () => {
 
   const handleSelectSection = (key: string) => {
     setSelectedSectionKey(key);
+    if (key.startsWith('page_')) {
+      setActiveCategoryTab('pages');
+    } else {
+      setActiveCategoryTab('home');
+    }
     const found = sections.find((s) => s.section_key === key);
     if (found) {
       setActiveSection(JSON.parse(JSON.stringify(found)));
@@ -221,6 +248,18 @@ export const AdminCMSPage: React.FC = () => {
     }
   };
 
+  const homeSections = sections.filter((s) => !s.section_key.startsWith('page_'));
+  const pageSections = sections.filter((s) => s.section_key.startsWith('page_'));
+  const displayedSections = activeCategoryTab === 'home' ? homeSections : pageSections;
+
+  const handleSwitchTab = (tab: 'home' | 'pages') => {
+    setActiveCategoryTab(tab);
+    const targetList = tab === 'home' ? homeSections : pageSections;
+    if (targetList.length > 0 && !targetList.some((s) => s.section_key === selectedSectionKey)) {
+      handleSelectSection(targetList[0].section_key);
+    }
+  };
+
   const activeCardType = activeSection ? getSectionCardType(activeSection.section_key) : 'default';
 
   return (
@@ -237,19 +276,19 @@ export const AdminCMSPage: React.FC = () => {
             Editor Conținut & Încadrare Vizuală
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
-            Editează titlurile, descrierile, textele butoanelor și reglează interactiv decupajul și zoom-ul fotografiilor pentru fiecare card de pe site.
+            Editează titlurile, descrierile, textele butoanelor și reglează interactiv decupajul și zoom-ul fotografiilor pentru fiecare pagină și card de pe site.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <a
-            href="/"
+            href={activeSection ? getPagePublicRoute(activeSection.section_key) : '/'}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs font-semibold text-slate-600 hover:text-brand-navy px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 flex items-center gap-1.5 transition-colors"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            <span>Vezi site-ul public</span>
+            <span>{activeSection?.section_key.startsWith('page_') ? 'Vezi pagina publică' : 'Vezi site-ul public'}</span>
           </a>
           <button
             onClick={handleSaveSection}
@@ -257,7 +296,7 @@ export const AdminCMSPage: React.FC = () => {
             className="btn-primary text-xs px-6 py-2.5 flex items-center gap-2 shadow-md disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
-            <span>{isSaving ? 'Se salvează...' : 'Salvează întreaga secțiune'}</span>
+            <span>{isSaving ? 'Se salvează...' : 'Salvează modificările'}</span>
           </button>
         </div>
       </div>
@@ -274,18 +313,47 @@ export const AdminCMSPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left: Section Selector Tabs */}
-        <div className="lg:col-span-4 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 space-y-2">
-          <div className="px-3 py-1 flex items-center justify-between">
+        <div className="lg:col-span-4 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 space-y-3">
+          
+          {/* Category Tabs: Homepage vs Dedicated Website Pages */}
+          <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-2xl gap-1">
+            <button
+              type="button"
+              onClick={() => handleSwitchTab('home')}
+              className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                activeCategoryTab === 'home'
+                  ? 'bg-white text-brand-navy shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <Layout className="w-3.5 h-3.5" />
+              <span>Homepage ({homeSections.length})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSwitchTab('pages')}
+              className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                activeCategoryTab === 'pages'
+                  ? 'bg-white text-brand-navy shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <Globe className="w-3.5 h-3.5" />
+              <span>Pagini Site ({pageSections.length})</span>
+            </button>
+          </div>
+
+          <div className="px-2 py-0.5 flex items-center justify-between">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              Secțiuni Gestionate
+              {activeCategoryTab === 'home' ? 'Secțiuni Homepage' : 'Pagini Publice'}
             </h3>
             <span className="text-[11px] font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-              {sections.length} secțiuni
+              {displayedSections.length} elemente
             </span>
           </div>
 
           <div className="space-y-1.5">
-            {sections.map((sec) => {
+            {displayedSections.map((sec) => {
               const isSelected = selectedSectionKey === sec.section_key;
               return (
                 <button
@@ -535,6 +603,139 @@ export const AdminCMSPage: React.FC = () => {
                         className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono"
                       />
                     </div>
+                  </div>
+                )}
+
+                {/* Dedicated Website Page Settings (SEO, Banner Cropper, Custom Parameters) */}
+                {activeSection.section_key.startsWith('page_') && (
+                  <div className="pt-4 border-t border-slate-100 space-y-5">
+                    
+                    {/* SEO & Meta Tags Card */}
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-brand-green" />
+                        <h4 className="font-serif font-bold text-sm text-brand-navy">
+                          Optimizare SEO & Social Media
+                        </h4>
+                      </div>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block font-semibold text-slate-700 mb-1">
+                            Titlu SEO Browser (Title Tag)
+                          </label>
+                          <input
+                            type="text"
+                            value={activeSection.metadata_json?.seo_title || ''}
+                            onChange={(e) => handleSectionMetadataChange('seo_title', e.target.value)}
+                            placeholder="Ex: Cursuri Asistenți Medicali | NursLab"
+                            className="w-full p-2.5 rounded-xl border border-slate-200 text-xs bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block font-semibold text-slate-700 mb-1">
+                            Meta Descriere (Search Engines & Social Preview)
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={activeSection.metadata_json?.meta_description || ''}
+                            onChange={(e) => handleSectionMetadataChange('meta_description', e.target.value)}
+                            placeholder="Descriere sintetică a paginii pentru Google și rețelele sociale..."
+                            className="w-full p-2.5 rounded-xl border border-slate-200 text-xs bg-white leading-relaxed"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Banner Image & Visual Cropper */}
+                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <ImageIcon className="w-4 h-4 text-[#0284C7]" />
+                          <h4 className="font-serif font-bold text-sm text-brand-navy">
+                            Imagine Banner / Antet Pagină
+                          </h4>
+                        </div>
+                        <span className="text-[11px] text-slate-400 font-medium">
+                          Editor vizual cu poziționare și decupaj 9 puncte
+                        </span>
+                      </div>
+
+                      <VisualImageCropper
+                        label={`Fotografie Reprezentativă: ${activeSection.title}`}
+                        imageUrl={activeSection.metadata_json?.banner_image || activeSection.metadata_json?.image_url || '/images/hero_nurses.jpg'}
+                        onImageUrlChange={(newUrl) => handleSectionMetadataChange('banner_image', newUrl)}
+                        metadata={activeSection.metadata_json}
+                        onChange={handleSectionMetadataObjectChange}
+                        onSave={handleSaveSection}
+                        cardType="hero"
+                        cardTitle={activeSection.title}
+                      />
+                    </div>
+
+                    {/* Page Specific Inputs */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {activeSection.section_key === 'page_courses' && (
+                        <div>
+                          <label className="block font-semibold text-slate-700 mb-1">Badge Antet</label>
+                          <input
+                            type="text"
+                            value={activeSection.metadata_json?.badge || ''}
+                            onChange={(e) => handleSectionMetadataChange('badge', e.target.value)}
+                            placeholder="Ex: CURSURI PRACTICE"
+                            className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                          />
+                        </div>
+                      )}
+
+                      {activeSection.section_key === 'page_workshops' && (
+                        <div>
+                          <label className="block font-semibold text-slate-700 mb-1">Email Contact Workshopuri</label>
+                          <input
+                            type="email"
+                            value={activeSection.metadata_json?.contact_email || ''}
+                            onChange={(e) => handleSectionMetadataChange('contact_email', e.target.value)}
+                            placeholder="workshop@nurslab.ro"
+                            className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono"
+                          />
+                        </div>
+                      )}
+
+                      {activeSection.section_key === 'page_home_nursing' && (
+                        <div>
+                          <label className="block font-semibold text-slate-700 mb-1">Telefon Urgențe / Solicitări</label>
+                          <input
+                            type="text"
+                            value={activeSection.metadata_json?.phone || ''}
+                            onChange={(e) => handleSectionMetadataChange('phone', e.target.value)}
+                            placeholder="+40 700 000 000"
+                            className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono"
+                          />
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block font-semibold text-slate-700 mb-1">Text Buton Principal (Opțional)</label>
+                        <input
+                          type="text"
+                          value={activeSection.metadata_json?.cta_label || ''}
+                          onChange={(e) => handleSectionMetadataChange('cta_label', e.target.value)}
+                          placeholder="Ex: Explorează acum"
+                          className="w-full p-2.5 rounded-xl border border-slate-200 text-xs"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-semibold text-slate-700 mb-1">Link Buton Principal (Opțional)</label>
+                        <input
+                          type="text"
+                          value={activeSection.metadata_json?.cta_url || ''}
+                          onChange={(e) => handleSectionMetadataChange('cta_url', e.target.value)}
+                          placeholder="Ex: /courses sau #inscriere"
+                          className="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-mono"
+                        />
+                      </div>
+                    </div>
+
                   </div>
                 )}
 

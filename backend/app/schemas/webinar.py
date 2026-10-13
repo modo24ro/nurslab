@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -8,6 +8,7 @@ class SpeakerCreate(BaseModel):
     hospital: Optional[str] = None
     bio: Optional[str] = None
     photo_url: Optional[str] = None
+    metadata_json: Optional[Dict[str, Any]] = None
 
 class SpeakerUpdate(BaseModel):
     full_name: Optional[str] = None
@@ -15,6 +16,7 @@ class SpeakerUpdate(BaseModel):
     hospital: Optional[str] = None
     bio: Optional[str] = None
     photo_url: Optional[str] = None
+    metadata_json: Optional[Dict[str, Any]] = None
 
 class SpeakerResponse(BaseModel):
     id: str
@@ -23,6 +25,7 @@ class SpeakerResponse(BaseModel):
     hospital: Optional[str] = None
     bio: Optional[str] = None
     photo_url: Optional[str] = None
+    metadata_json: Dict[str, Any] = {}
 
     class Config:
         from_attributes = True
@@ -40,6 +43,7 @@ class WebinarCreate(BaseModel):
     is_free: bool = True
     recording_url: Optional[str] = None
     is_published: bool = True
+    metadata_json: Optional[Dict[str, Any]] = None
 
 class WebinarUpdate(BaseModel):
     title: Optional[str] = None
@@ -54,6 +58,7 @@ class WebinarUpdate(BaseModel):
     is_free: Optional[bool] = None
     recording_url: Optional[str] = None
     is_published: Optional[bool] = None
+    metadata_json: Optional[Dict[str, Any]] = None
 
 class WebinarResponse(BaseModel):
     id: str
@@ -70,6 +75,7 @@ class WebinarResponse(BaseModel):
     recording_url: Optional[str] = None
     is_registered: Optional[bool] = False
     is_published: Optional[bool] = True
+    metadata_json: Dict[str, Any] = {}
 
     class Config:
         from_attributes = True

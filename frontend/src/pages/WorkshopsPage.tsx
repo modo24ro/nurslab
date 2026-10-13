@@ -3,9 +3,16 @@ import { MapPin, Users, Calendar, Clock, CheckCircle2, Award, Shield, ArrowRight
 import { api } from '../services/api';
 import { WorkshopCity, WorkshopTopic } from '../types';
 import { LocalWorkshopsSection } from '../components/home/LocalWorkshopsSection';
+import { usePageCMS } from '../utils/usePageCMS';
 
 export const WorkshopsPage: React.FC = () => {
   const [topics, setTopics] = useState<WorkshopTopic[]>([]);
+
+  const pageCms = usePageCMS('page_workshops', {
+    kicker: 'Instruire Clinică Practică',
+    title: 'Workshopuri Fizice de Nursing',
+    subtitle: 'Exersare directă pe simulatoare medicale avansate, manechine anatomice și echipamente spitalicești reale, sub îndrumarea formatorilor atestați.',
+  });
 
   useEffect(() => {
     api.getWorkshopTopics().then(setTopics).catch(() => {});
@@ -17,15 +24,19 @@ export const WorkshopsPage: React.FC = () => {
         
         {/* Page Header */}
         <div className="max-w-3xl space-y-3">
-          <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
-            Instruire Clinică Practică
-          </span>
+          {pageCms.kicker && (
+            <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
+              {pageCms.kicker}
+            </span>
+          )}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
-            Workshopuri Fizice de Nursing
+            {pageCms.title}
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            Exersare directă pe simulatoare medicale avansate, manechine anatomice și echipamente spitalicești reale, sub îndrumarea formatorilor atestați.
-          </p>
+          {pageCms.subtitle && (
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              {pageCms.subtitle}
+            </p>
+          )}
         </div>
 
         {/* Benefits Grid */}

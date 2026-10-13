@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, String, Integer, Numeric, Boolean, Text, ForeignKey, Enum
+from sqlalchemy import Column, String, Integer, Numeric, Boolean, Text, ForeignKey, Enum, JSON
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 from app.models.base import TimestampMixin, generate_uuid
@@ -48,6 +48,8 @@ class Course(Base, TimestampMixin):
     featured = Column(Boolean, default=False, nullable=False)
     has_certificate = Column(Boolean, default=True, nullable=False)
     completion_threshold_percent = Column(Integer, default=80, nullable=False)
+    status = Column(String(50), default="published", nullable=False) # draft, published, archived
+    metadata_json = Column(JSON, default=dict, nullable=False)
 
     category = relationship("Category", back_populates="courses")
     instructor = relationship("User", foreign_keys=[instructor_id])
@@ -78,6 +80,7 @@ class Lesson(Base, TimestampMixin):
     duration_minutes = Column(Integer, default=15, nullable=False)
     is_preview = Column(Boolean, default=False, nullable=False)
     order_index = Column(Integer, default=0, nullable=False)
+    is_published = Column(Boolean, default=True, nullable=False)
     content_markdown = Column(Text, nullable=True)
 
     section = relationship("CourseSection", back_populates="lessons")

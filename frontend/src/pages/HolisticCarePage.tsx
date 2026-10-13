@@ -4,9 +4,16 @@ import { Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { CMSSection } from '../types';
 import { HolisticCareSection } from '../components/home/HolisticCareSection';
+import { usePageCMS } from '../utils/usePageCMS';
 
 export const HolisticCarePage: React.FC = () => {
   const [holisticCms, setHolisticCms] = useState<CMSSection | undefined>();
+
+  const pageCms = usePageCMS('page_holistic', {
+    kicker: 'Filosofia de Îngrijire NursLab',
+    title: 'Abordarea Holistică în Nursing',
+    subtitle: 'Tratăm omul în totalitatea sa, nu doar diagnosticul. Îngrijirea holistică integrează dimensiunile fizice, psiho-emoționale, spirituale și sociale pentru o vindecare autentică.',
+  });
 
   useEffect(() => {
     api.getPublicCMS()
@@ -24,15 +31,19 @@ export const HolisticCarePage: React.FC = () => {
         
         {/* Header */}
         <div className="max-w-3xl space-y-3">
-          <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
-            Filosofia de Îngrijire NursLab
-          </span>
+          {pageCms.kicker && (
+            <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
+              {pageCms.kicker}
+            </span>
+          )}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
-            Abordarea Holistică în Nursing
+            {pageCms.title}
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            Tratăm omul în totalitatea sa, nu doar diagnosticul. Îngrijirea holistică integrează dimensiunile fizice, psiho-emoționale, spirituale și sociale pentru o vindecare autentică.
-          </p>
+          {pageCms.subtitle && (
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              {pageCms.subtitle}
+            </p>
+          )}
         </div>
 
         {/* 4 Deep Dive Cards */}

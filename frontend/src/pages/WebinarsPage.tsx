@@ -4,14 +4,21 @@ import { Video, Calendar, Clock, User, CheckCircle2, ArrowRight, Play, Users, Sp
 import { api } from '../services/api';
 import { Webinar } from '../types';
 import { useAuth } from '../context/AuthContext';
-
+import { formatImageUrl, getImageStyle } from '../utils/cms';
 import { ReservationSuccessModal } from '../components/common/ReservationSuccessModal';
+import { usePageCMS } from '../utils/usePageCMS';
 
 export const WebinarsPage: React.FC = () => {
   const [webinars, setWebinars] = useState<Webinar[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'live' | 'interview'>('all');
   const [registeredMap, setRegisteredMap] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(true);
+
+  const pageCms = usePageCMS('page_webinars', {
+    kicker: 'Transmisiuni Live & Înregistrări Clinice',
+    title: 'Webinarii NursLab',
+    subtitle: 'Perspective practice din gărzile de urgență și terapie intensivă: sesiuni interactive, studii de caz și discuții aplicate cu specialiști de top.',
+  });
   const [successModalData, setSuccessModalData] = useState<{
     isOpen: boolean;
     title?: string;
@@ -74,15 +81,19 @@ export const WebinarsPage: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200/60 pb-8">
           <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold tracking-widest text-[#1C4269] uppercase font-sans">
-              Transmisiuni Live & Înregistrări Clinice
-            </span>
+            {pageCms.kicker && (
+              <span className="text-xs font-bold tracking-widest text-[#1C4269] uppercase font-sans">
+                {pageCms.kicker}
+              </span>
+            )}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
-              Webinarii <span className="text-brand-green">NursLab</span>
+              {pageCms.title}
             </h1>
-            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-              Perspective practice din gărzile de urgență și terapie intensivă: sesiuni interactive, studii de caz și discuții aplicate cu specialiști de top.
-            </p>
+            {pageCms.subtitle && (
+              <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+                {pageCms.subtitle}
+              </p>
+            )}
           </div>
 
           <Link
@@ -152,9 +163,10 @@ export const WebinarsPage: React.FC = () => {
               >
                 <div className="relative h-64 sm:h-72 bg-slate-100 overflow-hidden">
                   <img
-                    src={w.cover_image || '/images/guest_radu.jpg'}
+                    src={formatImageUrl(w.cover_image || '/images/guest_radu.jpg')}
                     alt={w.title}
-                    className="w-full h-full object-cover object-top"
+                    style={getImageStyle(w.metadata_json)}
+                    className="w-full h-full object-cover"
                   />
                   <div className="absolute top-4 left-4 flex items-center gap-2">
                     <span className={w.badge === 'LIVE' ? 'badge-coral' : 'badge-mint'}>
@@ -206,7 +218,12 @@ export const WebinarsPage: React.FC = () => {
                       >
                         <div className="w-11 h-11 rounded-full bg-slate-100 overflow-hidden border border-slate-200 shrink-0">
                           {w.speaker.photo_url ? (
-                            <img src={w.speaker.photo_url} alt={w.speaker.full_name} className="w-full h-full object-cover object-top" />
+                            <img
+                              src={formatImageUrl(w.speaker.photo_url)}
+                              alt={w.speaker.full_name}
+                              style={getImageStyle(w.speaker.metadata_json)}
+                              className="w-full h-full object-cover"
+                            />
                           ) : (
                             <User className="w-5 h-5 text-slate-400 m-3" />
                           )}

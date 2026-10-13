@@ -327,3 +327,162 @@ async def test_cms_unauthorized_access(client: AsyncClient):
     )
     assert res.status_code in (401, 403)
 
+@pytest.mark.asyncio
+async def test_admin_course_lifecycle_and_curriculum(client: AsyncClient):
+    # Admin login
+    login_res = await client.post("/api/v1/auth/login", json={
+        "email": "admin@nurslab.ro",
+        "password": "Admin123!"
+    })
+    assert login_res.status_code == 200
+    token = login_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 1. Create a course in draft status
+    unique_slug = f"curs-test-{uuid.uuid4().hex[:6]}"
+    create_payload = {
+        "title": "Curs Test Nursing Administrativ",
+        "slug": unique_slug,
+        "short_description": "Descriere scurtă pentru curs de test",
+        "full_description": "Descriere completă cu detalii clinice și proceduri.",
+        "difficulty": "intermediate",
+        "estimated_hours": 12,
+        "is_free": False,
+        "price": 149.00,
+        "currency": "RON",
+        "status": "draft",
+        "is_published": False,
+        "featured": True,
+        "has_certificate": True,
+        "cover_image": "/images/journey_theory.jpg",
+        "metadata_json": {
+            "image_position_x": 50,
+            "image_position_y": 25,
+            "zoom": 1.2,
+            "outcomes": ["Recunoașterea urgențelor", "Protocol de resuscitare"],
+            "prerequisites": ["Diplomă de asistent medical generalist"],
+            "target_audience": ["Asistenți medicali UPU și ATI"],
+            "seo_title": "Curs Nursing Administrativ | NursLab",
+            "meta_description": "Învață protocoalele moderne de îngrijire medicală."
+        }
+    }
+    create_res = await client.post("/api/v1/courses/", json=create_payload, headers=headers)
+    assert create_res.status_code == 201
+    course_data = create_res.json()
+    course_id = course_data["id"]
+    assert course_data["title"] == "Curs Test Nursing Administrativ"
+    assert course_data["status"] == "draft"
+    assert course_data["metadata_json"]["zoom"] == 1.2
+    assert len(course_data["metadata_json"]["outcomes"]) == 2
+
+    # 2. Add Section
+    sec_res = await client.post(
+        f"/api/v1/courses/{course_id}/sections",
+        json={"title": "Modulul 1: Evaluarea inițială", "description": "Pași preliminari", "order_index": 0},
+        headers=headers
+    )
+    assert sec_res.status_code == 201
+    section_id = sec_res.json()["id"]
+
+    # 3. Add Lesson
+    les_res = await client.post(
+        f"/api/v1/courses/sections/{section_id}/lessons",
+        json={
+            "title": "Lecția 1: Monitorizarea funcțiilor vitale",
+            "slug": f"lectia-1-{uuid.uuid4().hex[:4]}",
+            "lesson_type": "video",
+            "duration_minutes": 20,
+            "is_preview": True,
+            "order_index": 0,
+            "content_markdown": "Conținut detaliat despre tensiune, puls, saturație."
+        },
+        headers=headers
+    )
+    assert les_res.status_code == 201
+    lesson_id = les_res.json()["id"]
+
+    # 4. Update Course (Publish it)
+    update_res = await client.put(
+        f"/api/v1/courses/{course_id}",
+        json={"status": "published", "is_published": True},
+        headers=headers
+    )
+    assert update_res.status_code == 200
+    assert update_res.json()["status"] == "published"
+    assert update_res.json()["is_published"] is True
+    assert update_res.json()["total_sections_count"] == 1
+    assert update_res.json()["total_lessons_count"] == 1
+
+    # 5. Duplicate Course
+    dup_res = await client.post(f"/api/v1/courses/{course_id}/duplicate", headers=headers)
+    assert dup_res.status_code == 200
+    dup_data = dup_res.json()
+    assert "(Copie)" in dup_data["title"]
+    assert dup_data["status"] == "draft"
+    assert dup_data["is_published"] is False
+    assert dup_data["total_sections_count"] == 1
+    assert dup_data["total_lessons_count"] == 1
+    dup_id = dup_data["id"]
+
+    # 6. Delete Duplicate Course & Original Course
+    del_dup = await client.delete(f"/api/v1/courses/{dup_id}", headers=headers)
+    assert del_dup.status_code == 200
+    del_orig = await client.delete(f"/api/v1/courses/{course_id}", headers=headers)
+    assert del_orig.status_code == 200
+
+@pytest.mark.asyncio
+async def test_admin_speaker_photo_positioning(client: AsyncClient):
+    # Admin login
+    login_res = await client.post("/api/v1/auth/login", json={
+        "email": "admin@nurslab.ro",
+        "password": "Admin123!"
+    })
+    assert login_res.status_code == 200
+    token = login_res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 1. Create speaker with photo positioning metadata
+    speaker_payload = {
+        "full_name": "Dr. Test Speaker",
+        "title": "Medic Primar ATI",
+        "hospital": "Spitalul Universitar",
+        "bio": "Medic specialist în terapie intensivă și urgențe majore.",
+        "photo_url": "/images/speaker_dr_andrei_radu.jpg",
+        "metadata_json": {
+            "image_position_x": 50,
+            "image_position_y": 20,
+            "zoom": 1.15,
+            "image_position": "50% 20%",
+            "object_fit": "cover"
+        }
+    }
+    create_res = await client.post("/api/v1/webinars/speakers", json=speaker_payload, headers=headers)
+    assert create_res.status_code == 201
+    speaker_data = create_res.json()
+    speaker_id = speaker_data["id"]
+    assert speaker_data["metadata_json"]["zoom"] == 1.15
+
+    # 2. Update photo positioning
+    update_res = await client.put(
+        f"/api/v1/webinars/speakers/{speaker_id}",
+        json={
+            "metadata_json": {
+                "image_position_x": 40,
+                "image_position_y": 10,
+                "zoom": 1.4,
+                "image_position": "40% 10%",
+                "object_fit": "cover"
+            }
+        },
+        headers=headers
+    )
+    assert update_res.status_code == 200
+    updated_speaker = update_res.json()
+    assert updated_speaker["metadata_json"]["zoom"] == 1.4
+    assert updated_speaker["metadata_json"]["image_position"] == "40% 10%"
+
+    # 3. Clean up
+    del_res = await client.delete(f"/api/v1/webinars/speakers/{speaker_id}", headers=headers)
+    assert del_res.status_code == 200
+
+

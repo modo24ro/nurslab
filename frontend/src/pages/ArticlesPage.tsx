@@ -3,11 +3,18 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { BookOpen, Clock, Calendar, ArrowRight, User } from 'lucide-react';
 import { api } from '../services/api';
 import { Article } from '../types';
+import { usePageCMS } from '../utils/usePageCMS';
 
 export const ArticlesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const pageCms = usePageCMS('page_articles', {
+    kicker: 'Lumea Medicală',
+    title: 'Articole, Ghiduri & Perspective Clinice',
+    subtitle: 'Publicații dedicate comunității medicale: carieră în nursing, inovații tehnologice, studii de caz și interviuri din spitale.',
+  });
 
   const categorySlug = searchParams.get('cat') || searchParams.get('category') || '';
 
@@ -25,15 +32,19 @@ export const ArticlesPage: React.FC = () => {
         
         {/* Header */}
         <div className="max-w-3xl space-y-3">
-          <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
-            Lumea Medicală
-          </span>
+          {pageCms.kicker && (
+            <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
+              {pageCms.kicker}
+            </span>
+          )}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
-            Articole, Ghiduri & Perspective Clinice
+            {pageCms.title}
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            Publicații dedicate comunității medicale: carieră în nursing, inovații tehnologice, studii de caz și interviuri din spitale.
-          </p>
+          {pageCms.subtitle && (
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              {pageCms.subtitle}
+            </p>
+          )}
         </div>
 
         {/* Category Pills */}

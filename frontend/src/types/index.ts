@@ -48,9 +48,11 @@ export interface Course {
   price: number;
   currency: string;
   is_published: boolean;
+  status?: string;
   featured: boolean;
   has_certificate: boolean;
   total_lessons_count?: number;
+  metadata_json?: Record<string, any>;
 }
 
 export interface LessonSummary {
@@ -235,6 +237,7 @@ export interface Speaker {
   hospital?: string;
   bio?: string;
   photo_url?: string;
+  metadata_json?: Record<string, any>;
 }
 
 export interface SpeakerDetail extends Speaker {
@@ -256,6 +259,69 @@ export interface Webinar {
   recording_url?: string;
   is_registered?: boolean;
   is_published?: boolean;
+  metadata_json?: Record<string, any>;
+}
+
+export interface LessonAdmin {
+  id: string;
+  section_id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  lesson_type: LessonType;
+  video_url?: string;
+  duration_minutes: number;
+  is_preview: boolean;
+  order_index: number;
+  is_published: boolean;
+  content_markdown?: string;
+}
+
+export interface CourseSectionAdmin {
+  id: string;
+  course_id: string;
+  title: string;
+  description?: string;
+  order_index: number;
+  lessons: LessonAdmin[];
+}
+
+export interface CourseAdmin {
+  id: string;
+  title: string;
+  slug: string;
+  short_description: string;
+  full_description: string;
+  cover_image?: string;
+  preview_video_url?: string;
+  category_id?: string;
+  category_name?: string;
+  instructor_id?: string;
+  instructor_name?: string;
+  instructor_specialty?: string;
+  difficulty: CourseDifficulty;
+  estimated_hours: number;
+  is_free: boolean;
+  price: number;
+  currency: string;
+  is_published: boolean;
+  status: string;
+  featured: boolean;
+  has_certificate: boolean;
+  completion_threshold_percent: number;
+  metadata_json: Record<string, any>;
+  total_sections_count: number;
+  total_lessons_count: number;
+  sections: CourseSectionAdmin[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface InstructorOption {
+  id: string;
+  full_name: string;
+  email: string;
+  specialty?: string;
 }
 
 export interface Certificate {

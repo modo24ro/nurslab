@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { Webinar, Speaker } from '../../types';
+import { VisualImageCropper } from '../../components/admin/VisualImageCropper';
+import { formatImageUrl, getImageStyle } from '../../utils/cms';
 
 export const AdminWebinarsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'webinars' | 'speakers'>('webinars');
@@ -31,6 +33,7 @@ export const AdminWebinarsPage: React.FC = () => {
     is_free: true,
     recording_url: '',
     is_published: true,
+    metadata_json: {} as any,
   });
 
   // Speaker Modal State
@@ -42,6 +45,7 @@ export const AdminWebinarsPage: React.FC = () => {
     hospital: '',
     bio: '',
     photo_url: '',
+    metadata_json: {} as any,
   });
 
   const [saving, setSaving] = useState(false);
@@ -81,11 +85,12 @@ export const AdminWebinarsPage: React.FC = () => {
       badge: 'LIVE',
       scheduled_at: dateStr,
       duration_minutes: 90,
-      cover_image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=800&auto=format&fit=crop&q=80',
+      cover_image: '/images/guest_radu.jpg',
       speaker_id: speakers.length > 0 ? speakers[0].id : '',
       is_free: true,
       recording_url: '',
       is_published: true,
+      metadata_json: {},
     });
     setWebinarModalOpen(true);
   };
@@ -113,6 +118,7 @@ export const AdminWebinarsPage: React.FC = () => {
       is_free: w.is_free,
       recording_url: w.recording_url || '',
       is_published: w.is_published ?? true,
+      metadata_json: w.metadata_json || {},
     });
     setWebinarModalOpen(true);
   };
@@ -136,6 +142,7 @@ export const AdminWebinarsPage: React.FC = () => {
         is_free: webinarFormData.is_free,
         recording_url: webinarFormData.recording_url || undefined,
         is_published: webinarFormData.is_published,
+        metadata_json: webinarFormData.metadata_json || {},
       };
 
       if (editingWebinar) {
@@ -176,7 +183,8 @@ export const AdminWebinarsPage: React.FC = () => {
       title: '',
       hospital: '',
       bio: '',
-      photo_url: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&auto=format&fit=crop&q=80',
+      photo_url: '/images/speaker_dr_andrei_radu.jpg',
+      metadata_json: {},
     });
     setSpeakerModalOpen(true);
   };
@@ -190,6 +198,7 @@ export const AdminWebinarsPage: React.FC = () => {
       hospital: s.hospital || '',
       bio: s.bio || '',
       photo_url: s.photo_url || '',
+      metadata_json: s.metadata_json || {},
     });
     setSpeakerModalOpen(true);
   };
@@ -200,11 +209,15 @@ export const AdminWebinarsPage: React.FC = () => {
     setSaving(true);
     setMessage(null);
     try {
+      const payload = {
+        ...speakerFormData,
+        metadata_json: speakerFormData.metadata_json || {},
+      };
       if (editingSpeaker) {
-        await api.updateSpeaker(editingSpeaker.id, speakerFormData);
+        await api.updateSpeaker(editingSpeaker.id, payload);
         setMessage({ type: 'success', text: 'Datele invitatului au fost actualizate!' });
       } else {
-        await api.createSpeaker(speakerFormData);
+        await api.createSpeaker(payload);
         setMessage({ type: 'success', text: 'Invitat adăugat cu succes!' });
       }
 
@@ -364,8 +377,9 @@ export const AdminWebinarsPage: React.FC = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <img
-                            src={w.cover_image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&auto=format&fit=crop&q=80'}
+                            src={formatImageUrl(w.cover_image || 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&auto=format&fit=crop&q=80')}
                             alt=""
+                            style={getImageStyle(w.metadata_json)}
                             className="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0"
                           />
                           <div className="max-w-xs">
@@ -379,7 +393,12 @@ export const AdminWebinarsPage: React.FC = () => {
                         {w.speaker ? (
                           <div className="flex items-center gap-2">
                             {w.speaker.photo_url && (
-                              <img src={w.speaker.photo_url} alt="" className="w-6 h-6 rounded-full object-cover" />
+                              <img
+                                src={formatImageUrl(w.speaker.photo_url)}
+                                alt=""
+                                style={getImageStyle(w.speaker.metadata_json)}
+                                className="w-6 h-6 rounded-full object-cover shrink-0"
+                              />
                             )}
                             <span className="font-semibold text-brand-navy">{w.speaker.full_name}</span>
                           </div>
@@ -478,8 +497,9 @@ export const AdminWebinarsPage: React.FC = () => {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <img
-                            src={s.photo_url || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&auto=format&fit=crop&q=80'}
+                            src={formatImageUrl(s.photo_url || 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&auto=format&fit=crop&q=80')}
                             alt=""
+                            style={getImageStyle(s.metadata_json)}
                             className="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0"
                           />
                           <span className="font-bold text-slate-900">{s.full_name}</span>
@@ -528,7 +548,7 @@ export const AdminWebinarsPage: React.FC = () => {
       {/* WEBINAR EDIT/CREATE MODAL */}
       {webinarModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <h2 className="text-xl font-bold font-serif text-brand-navy">
                 {editingWebinar ? 'Editează Webinar' : 'Adaugă Webinar Nou'}
@@ -633,28 +653,30 @@ export const AdminWebinarsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-700 font-semibold mb-1">URL Imagine Copertă</label>
-                  <input
-                    type="url"
-                    value={webinarFormData.cover_image}
-                    onChange={(e) => setWebinarFormData({ ...webinarFormData, cover_image: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green/30"
-                  />
-                </div>
+              {/* Visual Image Cropper for Webinar Cover */}
+              <VisualImageCropper
+                label="Copertă Webinar & Poziționare Imagine"
+                imageUrl={webinarFormData.cover_image}
+                onImageUrlChange={(newUrl) => setWebinarFormData(prev => ({ ...prev, cover_image: newUrl }))}
+                metadata={webinarFormData.metadata_json}
+                onChange={(updatedMeta) => setWebinarFormData(prev => ({
+                  ...prev,
+                  metadata_json: { ...prev.metadata_json, ...updatedMeta }
+                }))}
+                cardType="default"
+                cardTitle={webinarFormData.title || 'Webinar'}
+                badge={webinarFormData.badge || 'LIVE'}
+              />
 
-                <div>
-                  <label className="block text-slate-700 font-semibold mb-1">URL Înregistrare Video (după transmisiune)</label>
-                  <input
-                    type="url"
-                    value={webinarFormData.recording_url}
-                    onChange={(e) => setWebinarFormData({ ...webinarFormData, recording_url: e.target.value })}
-                    placeholder="https://...mp4 sau YouTube/Vimeo"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green/30"
-                  />
-                </div>
+              <div>
+                <label className="block text-slate-700 font-semibold mb-1">URL Înregistrare Video (după transmisiune)</label>
+                <input
+                  type="url"
+                  value={webinarFormData.recording_url}
+                  onChange={(e) => setWebinarFormData({ ...webinarFormData, recording_url: e.target.value })}
+                  placeholder="https://...mp4 sau YouTube/Vimeo"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green/30"
+                />
               </div>
 
               <div className="flex items-center gap-6 pt-2">
@@ -703,7 +725,7 @@ export const AdminWebinarsPage: React.FC = () => {
       {/* SPEAKER EDIT/CREATE MODAL */}
       {speakerModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8">
+          <div className="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl my-8 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <h2 className="text-xl font-bold font-serif text-brand-navy">
                 {editingSpeaker ? 'Editează Invitat' : 'Adaugă Invitat Nou'}
@@ -754,16 +776,19 @@ export const AdminWebinarsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-slate-700 font-semibold mb-1">URL Fotografie Profil</label>
-                <input
-                  type="url"
-                  value={speakerFormData.photo_url}
-                  onChange={(e) => setSpeakerFormData({ ...speakerFormData, photo_url: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-green/30"
-                />
-              </div>
+              {/* Visual Image Cropper for Speaker Profile Photograph */}
+              <VisualImageCropper
+                label="Fotografie Profil Invitat (Încadrare, Focalizare & Decupare)"
+                imageUrl={speakerFormData.photo_url}
+                onImageUrlChange={(newUrl) => setSpeakerFormData(prev => ({ ...prev, photo_url: newUrl }))}
+                metadata={speakerFormData.metadata_json}
+                onChange={(updatedMeta) => setSpeakerFormData(prev => ({
+                  ...prev,
+                  metadata_json: { ...prev.metadata_json, ...updatedMeta }
+                }))}
+                cardType="guest"
+                cardTitle={speakerFormData.full_name || 'Invitat'}
+              />
 
               <div>
                 <label className="block text-slate-700 font-semibold mb-1">Biografie & Experiență Clinică</label>

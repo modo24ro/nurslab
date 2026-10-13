@@ -4,6 +4,7 @@ import { BookOpen, Clock, Award, ShieldCheck, PlayCircle, CheckCircle2, ChevronD
 import { api } from '../services/api';
 import { CourseDetail } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { formatImageUrl, getImageStyle } from '../utils/cms';
 
 export const CourseDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -133,8 +134,9 @@ export const CourseDetailPage: React.FC = () => {
           <div className="lg:col-span-5 bg-[#F8FAF9] p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
             <div className="relative rounded-xl overflow-hidden aspect-video bg-black/5 border border-slate-200">
               <img
-                src={course.cover_image || 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80'}
+                src={formatImageUrl(course.cover_image || '/images/journey_theory.jpg')}
                 alt={course.title}
+                style={getImageStyle(course.metadata_json)}
                 className="w-full h-full object-cover"
               />
               {course.preview_video_url && (
@@ -257,22 +259,33 @@ export const CourseDetailPage: React.FC = () => {
             <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
               <h3 className="font-serif font-bold text-lg text-brand-navy">Ce vei învăța</h3>
               <ul className="space-y-2.5 text-sm text-slate-600">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
-                  <span>Protocoale clinice validate conform ghidurilor europene</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
-                  <span>Tehnici corecte de manipulare a dispozitivelor medicale</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
-                  <span>Prevenirea complicațiilor iatrogene și a incidentelor clinice</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
-                  <span>Test de autoevaluare cu certificat de perfecționare la final</span>
-                </li>
+                {course.metadata_json?.outcomes && course.metadata_json.outcomes.length > 0 ? (
+                  course.metadata_json.outcomes.map((out: string, idx: number) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
+                      <span>{out}</span>
+                    </li>
+                  ))
+                ) : (
+                  <>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
+                      <span>Protocoale clinice validate conform ghidurilor europene</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
+                      <span>Tehnici corecte de manipulare a dispozitivelor medicale</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
+                      <span>Prevenirea complicațiilor iatrogene și a incidentelor clinice</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-brand-green shrink-0 mt-0.5" />
+                      <span>Test de autoevaluare cu certificat de perfecționare la final</span>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>

@@ -3,10 +3,17 @@ import { Home, Heart, ShieldCheck, CheckCircle2, Phone, Calendar, ArrowRight } f
 import { api } from '../services/api';
 import { HomeNursingService, CMSSection } from '../types';
 import { HomeNursingSection } from '../components/home/HomeNursingSection';
+import { usePageCMS } from '../utils/usePageCMS';
 
 export const HomeNursingPage: React.FC = () => {
   const [services, setServices] = useState<HomeNursingService[]>([]);
   const [nursingCms, setNursingCms] = useState<CMSSection | undefined>();
+
+  const pageCms = usePageCMS('page_home_nursing', {
+    kicker: 'Asistență Medicală Mobilă',
+    title: 'Servicii de Nursing la Domiciliu',
+    subtitle: 'Îngrijire profesionistă, empatică și sigură în confortul căminului dumneavoastră, asigurată de asistenți medicali autorizați OAMGMAMR.',
+  });
 
   useEffect(() => {
     api.getHomeNursingServices().then(setServices).catch(() => {});
@@ -26,15 +33,19 @@ export const HomeNursingPage: React.FC = () => {
         
         {/* Page Header */}
         <div className="max-w-3xl space-y-3">
-          <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
-            Asistență Medicală Mobilă
-          </span>
+          {pageCms.kicker && (
+            <span className="text-xs font-bold tracking-widest text-brand-green uppercase font-sans">
+              {pageCms.kicker}
+            </span>
+          )}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-brand-navy">
-            Servicii de Nursing la Domiciliu
+            {pageCms.title}
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            Îngrijire profesionistă, empatică și sigură în confortul căminului dumneavoastră, asigurată de asistenți medicali autorizați OAMGMAMR.
-          </p>
+          {pageCms.subtitle && (
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              {pageCms.subtitle}
+            </p>
+          )}
         </div>
 
         {/* Services Catalog Grid */}
