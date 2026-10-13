@@ -50,6 +50,8 @@ class SiteSetting(Base, TimestampMixin):
     setting_key = Column(String(100), unique=True, index=True, nullable=False)
     setting_value = Column(Text, nullable=False)
     description = Column(String(255), nullable=True)
+    category = Column(String(50), default="general", nullable=True)
+    is_secret = Column(Boolean, default=False, nullable=False)
 
 class MediaAsset(Base, TimestampMixin):
     __tablename__ = "media_assets"

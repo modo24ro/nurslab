@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation, Navigate, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, FileEdit, BookOpen, MapPin, HeartHandshake,
-  Users, CreditCard, ChevronLeft, ShieldCheck, LogOut, Video
+  Users, CreditCard, ChevronLeft, ShieldCheck, LogOut, Video, Settings
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -27,6 +27,7 @@ export const AdminLayout: React.FC = () => {
     { label: 'Îngrijiri la Domiciliu', to: '/admin/home-nursing', icon: <HeartHandshake className="w-4 h-4" /> },
     { label: 'Utilizatori & Roluri', to: '/admin/users', icon: <Users className="w-4 h-4" /> },
     { label: 'Comenzi & Facturi', to: '/admin/orders', icon: <CreditCard className="w-4 h-4" /> },
+    { label: 'Setări Platformă', to: '/admin/settings', icon: <Settings className="w-4 h-4" /> },
   ];
 
   return (

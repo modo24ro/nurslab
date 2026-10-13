@@ -485,4 +485,143 @@ async def test_admin_speaker_photo_positioning(client: AsyncClient):
     del_res = await client.delete(f"/api/v1/webinars/speakers/{speaker_id}", headers=headers)
     assert del_res.status_code == 200
 
+@pytest.mark.asyncio
+async def test_settings_retrieval_and_secret_masking(client: AsyncClient):
+    # 1. Login as Admin
+    admin_login = await client.post("/api/v1/auth/login", json={
+        "email": "admin@nurslab.ro",
+        "password": "Admin123!"
+    })
+    assert admin_login.status_code == 200
+    headers = {"Authorization": f"Bearer {admin_login.json()['access_token']}"}
+
+    # 2. Get all settings
+    res = await client.get("/api/v1/settings/all", headers=headers)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "success"
+    settings = data["settings"]
+    assert "general_site_name" in settings
+    assert "email_smtp_host" in settings
+    assert "email_smtp_password" in settings
+
+    # Check secret masking
+    pwd_item = settings["email_smtp_password"]
+    assert pwd_item["is_secret"] is True
+    if pwd_item["value"]:
+        assert pwd_item["value"] == "••••••••"
+
+@pytest.mark.asyncio
+async def test_settings_bulk_update(client: AsyncClient):
+    admin_login = await client.post("/api/v1/auth/login", json={
+        "email": "admin@nurslab.ro",
+        "password": "Admin123!"
+    })
+    headers = {"Authorization": f"Bearer {admin_login.json()['access_token']}"}
+
+    # Update settings using Dict[str, str]
+    update_payload = {
+        "settings": {
+            "general_site_name": "NursLab Medical Academy",
+            "billing_company_name": "SC NursLab Healthcare S.R.L.",
+            "email_smtp_password": "••••••••"  # masked should be ignored
+        }
+    }
+    update_res = await client.put("/api/v1/settings/bulk", json=update_payload, headers=headers)
+    assert update_res.status_code == 200
+
+    # Verify update
+    get_res = await client.get("/api/v1/settings/all", headers=headers)
+    assert get_res.status_code == 200
+    settings_data = get_res.json()["settings"]
+    assert settings_data["general_site_name"]["value"] == "NursLab Medical Academy"
+
+@pytest.mark.asyncio
+async def test_course_categories_admin_management(client: AsyncClient):
+    admin_login = await client.post("/api/v1/auth/login", json={
+        "email": "admin@nurslab.ro",
+        "password": "Admin123!"
+    })
+    headers = {"Authorization": f"Bearer {admin_login.json()['access_token']}"}
+
+    # 1. List categories
+    list_res = await client.get("/api/v1/settings/categories", headers=headers)
+    assert list_res.status_code == 200
+    categories = list_res.json()
+    assert len(categories) > 0
+    assert "courses_count" in categories[0]
+
+    # Find a category with courses
+    cat_with_courses = next((c for c in categories if c["courses_count"] > 0), None)
+
+    # 2. Try deleting a category with courses (should fail safely)
+    if cat_with_courses:
+        del_fail_res = await client.delete(f"/api/v1/settings/categories/{cat_with_courses['id']}", headers=headers)
+        assert del_fail_res.status_code == 400
+        assert "asociată" in del_fail_res.json()["detail"].lower()
+
+    # 3. Create a new category
+    test_slug = f"test-cat-{uuid.uuid4().hex[:6]}"
+    create_payload = {
+        "name": "Categorie Test Siguranță",
+        "slug": test_slug,
+        "description": "Descriere de test pentru modulul de setări",
+        "icon": "ShieldCheck",
+        "display_order": 99,
+        "is_active": True
+    }
+    create_res = await client.post("/api/v1/settings/categories", json=create_payload, headers=headers)
+    assert create_res.status_code == 201
+    created_cat = create_res.json()
+    new_cat_id = created_cat["id"]
+    assert created_cat["slug"] == test_slug
+
+    # 4. Duplicate slug should be rejected
+    dup_res = await client.post("/api/v1/settings/categories", json=create_payload, headers=headers)
+    assert dup_res.status_code == 400
+
+    # 5. Update the category
+    update_res = await client.put(
+        f"/api/v1/settings/categories/{new_cat_id}",
+        json={"name": "Categorie Test Actualizată", "is_active": False},
+        headers=headers
+    )
+    assert update_res.status_code == 200
+    assert update_res.json()["name"] == "Categorie Test Actualizată"
+    assert update_res.json()["is_active"] is False
+
+    # 6. Delete the new category (0 courses)
+    del_ok_res = await client.delete(f"/api/v1/settings/categories/{new_cat_id}", headers=headers)
+    assert del_ok_res.status_code == 200
+
+@pytest.mark.asyncio
+async def test_catalogs_and_diagnostics(client: AsyncClient):
+    admin_login = await client.post("/api/v1/auth/login", json={
+        "email": "admin@nurslab.ro",
+        "password": "Admin123!"
+    })
+    headers = {"Authorization": f"Bearer {admin_login.json()['access_token']}"}
+
+    # Catalogs GET
+    cat_res = await client.get("/api/v1/settings/catalogs", headers=headers)
+    assert cat_res.status_code == 200
+    catalogs = cat_res.json()
+    assert "course_levels" in catalogs
+
+    # Test Email diagnostic (with invalid host to verify error handling without crashing)
+    email_test_res = await client.post(
+        "/api/v1/settings/email/test",
+        json={
+            "to_email": "test@exemplu.ro",
+            "smtp_host": "invalid.smtp.host.test",
+            "smtp_port": 587,
+            "smtp_username": "test",
+            "smtp_password": "fake_password",
+            "smtp_encryption": "tls"
+        },
+        headers=headers
+    )
+    assert email_test_res.status_code == 400
+    assert "detail" in email_test_res.json()
+
 

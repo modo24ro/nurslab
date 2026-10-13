@@ -24,8 +24,9 @@ class Category(Base, TimestampMixin):
     description = Column(String(500), nullable=True)
     icon = Column(String(50), nullable=True)
     display_order = Column(Integer, default=0, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
 
-    courses = relationship("Course", back_populates="category", cascade="all, delete-orphan")
+    courses = relationship("Course", back_populates="category")
 
 class Course(Base, TimestampMixin):
     __tablename__ = "courses"

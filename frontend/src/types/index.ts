@@ -425,3 +425,40 @@ export interface AdminStats {
   pending_home_nursing_leads: number;
   certificates_issued: number;
 }
+
+export interface SettingItem {
+  id?: string;
+  value: string;
+  category: string;
+  description?: string;
+  is_secret: boolean;
+}
+
+export type SettingsMap = Record<string, SettingItem>;
+
+export interface CategoryAdmin {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  icon?: string;
+  display_order: number;
+  is_active: boolean;
+  courses_count: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CatalogOption {
+  value: string;
+  label: string;
+  description?: string;
+}
+
+export interface CatalogsData {
+  course_levels: CatalogOption[];
+  course_formats: CatalogOption[];
+  instructor_specialties: CatalogOption[];
+  lesson_types: CatalogOption[];
+  certificate_types: CatalogOption[];
+}

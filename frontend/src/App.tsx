@@ -33,6 +33,7 @@ import { AdminWorkshopsPage } from './pages/admin/AdminWorkshopsPage';
 import { AdminHomeNursingPage } from './pages/admin/AdminHomeNursingPage';
 import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { AdminOrdersPage } from './pages/admin/AdminOrdersPage';
+import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -93,6 +94,7 @@ export const App: React.FC = () => {
               <Route path="home-nursing" element={<AdminHomeNursingPage />} />
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="orders" element={<AdminOrdersPage />} />
+              <Route path="settings" element={<AdminSettingsPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

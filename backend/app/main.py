@@ -25,12 +25,18 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"unaccent extension notice: {e}")
 
-    # Seed data
+    # Seed data & default settings
     async with AsyncSessionLocal() as session:
         try:
             await seed_database(session)
         except Exception as e:
             print(f"Seed data notice: {e}")
+            
+        try:
+            from app.services.settings_service import seed_default_settings_if_missing
+            await seed_default_settings_if_missing(session)
+        except Exception as e:
+            print(f"Seed settings notice: {e}")
 
     yield
 

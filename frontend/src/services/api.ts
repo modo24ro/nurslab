@@ -156,4 +156,23 @@ export const api = {
   // Media
   uploadMedia: (formData: FormData) => request<any>('/media/upload', { method: 'POST', body: formData }),
   getMediaAssets: () => request<any[]>('/media/'),
+
+  // Settings & Configuration
+  getSettings: () => request<{ status: string; settings: Record<string, any> }>('/settings/all'),
+  updateSettingsBulk: (settings: Record<string, string>) =>
+    request<any>('/settings/bulk', { method: 'PUT', body: JSON.stringify({ settings }) }),
+  getAdminCategories: () => request<any[]>('/settings/categories'),
+  createCategory: (data: any) =>
+    request<any>('/settings/categories', { method: 'POST', body: JSON.stringify(data) }),
+  updateCategory: (id: string, data: any) =>
+    request<any>(`/settings/categories/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteCategory: (id: string) =>
+    request<any>(`/settings/categories/${id}`, { method: 'DELETE' }),
+  getCatalogs: () => request<any>('/settings/catalogs'),
+  updateCatalog: (catalogKey: string, options: any[]) =>
+    request<any>(`/settings/catalogs/${catalogKey}`, { method: 'PUT', body: JSON.stringify({ options }) }),
+  testSmtpEmail: (data: any) =>
+    request<any>('/settings/email/test', { method: 'POST', body: JSON.stringify(data) }),
+  testStripePayment: (data: any) =>
+    request<any>('/settings/payments/test', { method: 'POST', body: JSON.stringify(data) }),
 };

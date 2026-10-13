@@ -2,7 +2,8 @@ from fastapi import APIRouter
 from app.api.v1.endpoints import (
     auth, cms, courses, lessons, progress, quizzes,
     certificates, payments, workshops, home_nursing,
-    articles, webinars, media, admin, health, search
+    articles, webinars, media, admin, health, search,
+    settings
 )
 
 api_router = APIRouter()
@@ -23,3 +24,4 @@ api_router.include_router(webinars.router, prefix="/webinars", tags=["Webinars &
 api_router.include_router(media.router, prefix="/media", tags=["Media Library"])
 api_router.include_router(admin.router, prefix="/admin", tags=["Admin Portal"])
 api_router.include_router(search.router, prefix="/search", tags=["Global Search"])
+api_router.include_router(settings.router, prefix="/settings", tags=["Settings & Configurations"])
