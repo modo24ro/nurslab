@@ -68,6 +68,9 @@ export const AdminSettingsPage: React.FC = () => {
   const [testingStripe, setTestingStripe] = useState(false);
   const [testStripeResult, setTestStripeResult] = useState<{ success: boolean; message: string } | null>(null);
 
+  // Stripe Live Mode Confirmation Modal State
+  const [stripeLiveModalOpen, setStripeLiveModalOpen] = useState(false);
+
   // Load all settings & catalogs on mount
   useEffect(() => {
     loadAllData();
@@ -1405,18 +1408,12 @@ export const AdminSettingsPage: React.FC = () => {
                   onChange={(e) => {
                     const newMode = e.target.value;
                     if (newMode === 'live') {
-                      if (
-                        window.confirm(
-                          'ATENȚIE: Sunteți pe cale să comutați Stripe în modul LIVE (Producție). Asigurați-vă că folosiți cheile reale de producție! Continuați?'
-                        )
-                      ) {
-                        handleFieldChange('payment_stripe_mode', 'live');
-                      }
+                      setStripeLiveModalOpen(true);
                     } else {
                       handleFieldChange('payment_stripe_mode', 'test');
                     }
                   }}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-sm font-bold outline-none ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-sm font-bold outline-none transition-colors ${
                     formValues['payment_stripe_mode'] === 'live'
                       ? 'bg-amber-50 border-amber-300 text-amber-900'
                       : 'bg-white border-slate-200 text-slate-800'
@@ -1933,6 +1930,68 @@ export const AdminSettingsPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* MODAL: STRIPE LIVE MODE CONFIRMATION */}
+      {stripeLiveModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100">
+            <div className="flex items-start gap-4 mb-5">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 shrink-0">
+                <AlertTriangle className="w-6 h-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-serif font-bold text-slate-900 text-lg">
+                    Confirmare Activare Mod LIVE Stripe
+                  </h3>
+                  <button
+                    onClick={() => setStripeLiveModalOpen(false)}
+                    className="text-slate-400 hover:text-slate-600 p-1"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <p className="text-xs text-amber-700 font-semibold mt-0.5">
+                  Atenție la datele financiare reale
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 mb-5 text-sm text-slate-700 leading-relaxed">
+              <p className="font-bold text-amber-950 mb-2">
+                ATENȚIE: Sunteți pe cale să comutați Stripe în modul LIVE (Producție). Asigurați-vă că folosiți cheile reale de producție! Continuați?
+              </p>
+              <ul className="text-xs text-slate-600 space-y-1.5 list-disc list-inside mt-2.5">
+                <li>Plățile procesate vor debita carduri bancare reale cu fonduri efective.</li>
+                <li>Asigurați-vă că ați configurat cheile <span className="font-mono text-slate-800 font-semibold">pk_live_...</span> și <span className="font-mono text-slate-800 font-semibold">sk_live_...</span></li>
+                <li>Verificați endpoint-ul de Webhook configurat în Dashboard-ul Stripe LIVE.</li>
+              </ul>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setStripeLiveModalOpen(false)}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-colors"
+              >
+                Rămâi în Test Mode
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleFieldChange('payment_stripe_mode', 'live');
+                  setStripeLiveModalOpen(false);
+                }}
+                className="px-5 py-2.5 rounded-xl bg-amber-600 text-white text-xs font-bold hover:bg-amber-700 shadow-sm flex items-center gap-1.5 transition-colors"
+              >
+                <Check className="w-4 h-4" />
+                Confirmă Comutarea în Modul LIVE
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
