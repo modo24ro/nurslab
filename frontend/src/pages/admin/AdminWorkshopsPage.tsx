@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { WorkshopInterestRegistration } from '../../types';
+import { Toast } from '../../components/common/Toast';
 
 export const AdminWorkshopsPage: React.FC = () => {
   const [registrations, setRegistrations] = useState<WorkshopInterestRegistration[]>([]);
@@ -282,27 +283,13 @@ export const AdminWorkshopsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Feedback Banner */}
+      {/* Toast Notification (Dreapta Jos) */}
       {feedback && (
-        <div
-          className={`p-4 rounded-2xl text-xs flex items-center justify-between gap-3 animate-in fade-in ${
-            feedback.type === 'success'
-              ? 'bg-emerald-50 text-emerald-900 border border-emerald-200'
-              : 'bg-rose-50 text-rose-900 border border-rose-200'
-          }`}
-        >
-          <div className="flex items-center gap-2.5">
-            {feedback.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            ) : (
-              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-            )}
-            <span className="font-semibold">{feedback.message}</span>
-          </div>
-          <button onClick={() => setFeedback(null)} className="text-slate-400 hover:text-slate-600 p-1">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+        <Toast
+          message={feedback.message}
+          type={feedback.type}
+          onClose={() => setFeedback(null)}
+        />
       )}
 
       {/* Advanced Live Search & Filter Bar */}

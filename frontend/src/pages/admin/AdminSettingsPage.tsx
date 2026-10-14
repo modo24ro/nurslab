@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { CategoryAdmin, CatalogOption } from '../../types';
+import { Toast } from '../../components/common/Toast';
 
 type SettingsTab = 'general' | 'categories' | 'email' | 'billing' | 'payments' | 'system';
 const VALID_TABS: SettingsTab[] = ['general', 'categories', 'email', 'billing', 'payments', 'system'];
@@ -439,30 +440,13 @@ export const AdminSettingsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Global Feedback Alert */}
+      {/* Toast Notification (Dreapta Jos) */}
       {feedback && (
-        <div
-          className={`p-4 rounded-2xl border flex items-center justify-between transition-all ${
-            feedback.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-              : 'bg-rose-50 border-rose-200 text-rose-900'
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            {feedback.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-            ) : (
-              <XCircle className="w-5 h-5 text-rose-600 shrink-0" />
-            )}
-            <span className="text-sm font-medium">{feedback.message}</span>
-          </div>
-          <button
-            onClick={() => setFeedback(null)}
-            className="text-slate-400 hover:text-slate-600 p-1"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+        <Toast
+          message={feedback.message}
+          type={feedback.type}
+          onClose={() => setFeedback(null)}
+        />
       )}
 
       {/* Navigation Tabs */}
