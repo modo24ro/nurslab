@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   BookOpen, Plus, Edit2, Trash2, Copy, Eye, CheckCircle2, XCircle,
   Search, SlidersHorizontal, Award, Clock, Users, ArrowRight,
-  FileText, Video, HelpCircle, Archive, AlertCircle, Save, X,
+  FileText, Video, HelpCircle, Archive, AlertCircle, AlertTriangle, Save, X,
   Layers, Check, Sparkles, ChevronDown, ChevronRight, ShieldCheck,
   Tag, DollarSign, Globe, PlayCircle
 } from 'lucide-react';
@@ -34,6 +34,10 @@ export const AdminCoursesPage: React.FC = () => {
   // Preview Modal State
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [previewCourse, setPreviewCourse] = useState<CourseAdmin | null>(null);
+
+  // Delete Confirmation Modal State
+  const [courseToDelete, setCourseToDelete] = useState<CourseAdmin | null>(null);
+  const [deletingCourse, setDeletingCourse] = useState(false);
 
   // Curriculum sub-form states
   const [newSectionTitle, setNewSectionTitle] = useState('');
@@ -330,18 +334,26 @@ export const AdminCoursesPage: React.FC = () => {
     }
   };
 
-  // Delete Course
-  const handleDeleteCourse = async (c: CourseAdmin) => {
-    if (!window.confirm(`ATENȚIE: Sunteți sigur că doriți să ștergeți definitiv cursul "${c.title}"? Această acțiune nu poate fi anulată.`)) return;
+  // Delete Course Handlers
+  const handleDeleteCourse = (c: CourseAdmin) => {
+    setCourseToDelete(c);
+  };
+
+  const handleConfirmDeleteCourse = async () => {
+    if (!courseToDelete) return;
+    setDeletingCourse(true);
     try {
-      await api.deleteCourse(c.id);
-      setMessage({ type: 'success', text: 'Cursul a fost șters definitiv.' });
-      if (editorModalOpen && editingCourse?.id === c.id) {
+      await api.deleteCourse(courseToDelete.id);
+      setMessage({ type: 'success', text: `Cursul "${courseToDelete.title}" a fost șters definitiv.` });
+      if (editorModalOpen && editingCourse?.id === courseToDelete.id) {
         setEditorModalOpen(false);
       }
+      setCourseToDelete(null);
       await loadData();
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message || 'Eroare la ștergerea cursului.' });
+    } finally {
+      setDeletingCourse(false);
     }
   };
 
@@ -1615,24 +1627,48 @@ export const AdminCoursesPage: React.FC = () => {
 
               {/* Modal Footer Actions */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPreviewCourse({
-                      ...formData,
-                      id: editingCourse ? editingCourse.id : 'preview-temp',
-                      category_name: categories.find((c) => c.id === formData.category_id)?.name || 'Practică',
-                      instructor_name: instructors.find((i) => i.id === formData.instructor_id)?.full_name || 'Echipa NursLab',
-                      total_sections_count: editingCourse ? editingCourse.sections.length : 0,
-                      total_lessons_count: editingCourse ? editingCourse.total_lessons_count : 0,
-                      sections: editingCourse ? editingCourse.sections : [],
-                    } as any);
-                    setPreviewModalOpen(true);
-                  }}
-                  className="btn-secondary text-xs px-4 py-2 flex items-center gap-1.5"
-                >
-                  <Eye className="w-3.5 h-3.5" /> Previzualizează
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPreviewCourse({
+                        ...editingCourse,
+                        title: formData.title || 'Titlu Curs',
+                        slug: formData.slug || 'curs-nou',
+                        short_description: formData.short_description,
+                        full_description: formData.full_description,
+                        category_id: formData.category_id,
+                        category_name: categories.find((c) => c.id === formData.category_id)?.name || 'Practică',
+                        difficulty: formData.difficulty,
+                        estimated_hours: formData.estimated_hours,
+                        is_free: formData.is_free,
+                        price: formData.price,
+                        currency: formData.currency,
+                        status: formData.status,
+                        is_published: formData.is_published,
+                        featured: formData.featured,
+                        cover_image: formData.cover_image,
+                        metadata_json: formData.metadata_json,
+                        sections: editingCourse ? editingCourse.sections : [],
+                      } as any);
+                      setPreviewModalOpen(true);
+                    }}
+                    className="btn-secondary text-xs px-4 py-2 flex items-center gap-1.5"
+                  >
+                    <Eye className="w-3.5 h-3.5" /> Previzualizează
+                  </button>
+                  {editingCourse && (
+                    <button
+                      type="button"
+                      onClick={() => setCourseToDelete(editingCourse)}
+                      className="px-3 py-2 rounded-xl text-rose-600 hover:text-rose-700 hover:bg-rose-50 text-xs font-semibold flex items-center gap-1.5 transition-colors border border-rose-200"
+                      title="Șterge acest curs definitiv"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Șterge Curs</span>
+                    </button>
+                  )}
+                </div>
 
                 <div className="flex items-center gap-3">
                   <button
@@ -1770,6 +1806,89 @@ export const AdminCoursesPage: React.FC = () => {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DEDICATED COURSE DELETE CONFIRMATION MODAL */}
+      {courseToDelete && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-150 space-y-5">
+            {/* Header with Danger Icon */}
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 shadow-xs">
+                <AlertTriangle className="w-6 h-6 text-rose-600" />
+              </div>
+              <div className="flex-1 pr-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
+                  Confirmare Ștergere Curs
+                </span>
+                <h3 className="text-lg sm:text-xl font-serif font-bold text-slate-900 mt-1">
+                  Ștergere Definitivă Curs
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setCourseToDelete(null)}
+                disabled={deletingCourse}
+                className="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+                title="Închide"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Prompt Alert Box */}
+            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 space-y-2">
+              <p className="text-sm font-semibold leading-relaxed">
+                <strong className="text-rose-700">ATENȚIE:</strong> Sunteți sigur că doriți să ștergeți definitiv cursul{' '}
+                <span className="font-bold underline decoration-rose-300">"{courseToDelete.title}"</span>? Această acțiune nu poate fi anulată.
+              </p>
+            </div>
+
+            {/* Impact Details & Course Snapshot */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 space-y-2.5">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 font-medium">
+                <span className="text-slate-500">Curs selectat:</span>
+                <span className="font-bold text-slate-800 line-clamp-1 max-w-[240px]">{courseToDelete.title}</span>
+              </div>
+              <p className="font-semibold text-slate-800 text-[11px] uppercase tracking-wider">Impactul acestei acțiuni:</p>
+              <ul className="list-disc list-inside space-y-1 text-slate-500 text-[11px] leading-relaxed">
+                <li>Vor fi eliminate ireversibil toate cele <strong>{courseToDelete.sections?.length || courseToDelete.total_sections_count || 0} module</strong> și <strong>{courseToDelete.total_lessons_count || 0} lecții</strong>.</li>
+                <li>Toate înregistrările de progres, notițele cursanților și evaluările asociate acestui curs vor fi șterse definitiv.</li>
+                <li>Cursul va dispărea imediat din catalogul public și din panoul de administrare.</li>
+              </ul>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setCourseToDelete(null)}
+                disabled={deletingCourse}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-semibold transition-colors"
+              >
+                Anulează
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteCourse}
+                disabled={deletingCourse}
+                className="px-5 py-2.5 rounded-xl bg-rose-600 text-white hover:bg-rose-700 text-xs font-bold shadow-sm flex items-center gap-2 transition-all disabled:opacity-50"
+              >
+                {deletingCourse ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Se șterge definitiv...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Da, șterge definitiv cursul</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
