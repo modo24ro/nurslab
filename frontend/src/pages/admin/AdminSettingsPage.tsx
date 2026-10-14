@@ -9,11 +9,13 @@ import {
 import { api } from '../../services/api';
 import { CategoryAdmin, CatalogOption } from '../../types';
 import { Toast } from '../../components/common/Toast';
+import { useModal } from '../../context/ModalContext';
 
 type SettingsTab = 'general' | 'categories' | 'email' | 'billing' | 'payments' | 'system';
 const VALID_TABS: SettingsTab[] = ['general', 'categories', 'email', 'billing', 'payments', 'system'];
 
 export const AdminSettingsPage: React.FC = () => {
+  const { showAlert, showConfirm } = useModal();
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -241,7 +243,7 @@ export const AdminSettingsPage: React.FC = () => {
       const updatedCats = await api.getAdminCategories();
       setCategories(updatedCats);
     } catch (err: any) {
-      alert(err.message || 'Eroare la salvarea categoriei');
+      showAlert(err.message || 'Eroare la salvarea categoriei', { type: 'error', title: 'Salvare Categorie' });
     } finally {
       setCategoryActionLoading(false);
     }
@@ -257,7 +259,7 @@ export const AdminSettingsPage: React.FC = () => {
       const updatedCats = await api.getAdminCategories();
       setCategories(updatedCats);
     } catch (err: any) {
-      alert(err.message || 'Nu s-a putut șterge categoria.');
+      showAlert(err.message || 'Nu s-a putut șterge categoria.', { type: 'error', title: 'Ștergere Categorie' });
     } finally {
       setCategoryActionLoading(false);
     }
@@ -266,12 +268,12 @@ export const AdminSettingsPage: React.FC = () => {
   // Catalogs Handlers
   const handleAddCatalogOption = async () => {
     if (!newCatalogOption.value.trim() || !newCatalogOption.label.trim()) {
-      alert('Completați codul (value) și denumirea (label).');
+      showAlert('Completați codul (value) și denumirea (label).', { type: 'warning', title: 'Câmpuri Obligatorii' });
       return;
     }
     const currentList = catalogs[activeCatalogKey] || [];
     if (currentList.some((item) => item.value === newCatalogOption.value.trim())) {
-      alert(`Opțiunea cu codul '${newCatalogOption.value}' există deja.`);
+      showAlert(`Opțiunea cu codul '${newCatalogOption.value}' există deja.`, { type: 'warning', title: 'Opțiune Existentă' });
       return;
     }
     const updatedList = [...currentList, { ...newCatalogOption, value: newCatalogOption.value.trim() }];
@@ -281,12 +283,18 @@ export const AdminSettingsPage: React.FC = () => {
       setNewCatalogOption({ value: '', label: '', description: '' });
       setFeedback({ type: 'success', message: 'Catalogul a fost actualizat cu succes.' });
     } catch (err: any) {
-      alert(err.message || 'Eroare la actualizarea catalogului.');
+      showAlert(err.message || 'Eroare la actualizarea catalogului.', { type: 'error', title: 'Actualizare Catalog' });
     }
   };
 
   const handleRemoveCatalogOption = async (valToRemove: string) => {
-    if (!window.confirm(`Confirmați eliminarea opțiunii '${valToRemove}' din catalog?`)) return;
+    const confirmed = await showConfirm(`Confirmați eliminarea opțiunii '${valToRemove}' din catalog?`, {
+      title: 'Ștergere Opțiune Catalog',
+      type: 'warning',
+      confirmText: 'Da, elimină',
+      cancelText: 'Anulează',
+    });
+    if (!confirmed) return;
     const currentList = catalogs[activeCatalogKey] || [];
     const updatedList = currentList.filter((item) => item.value !== valToRemove);
     try {
@@ -294,7 +302,7 @@ export const AdminSettingsPage: React.FC = () => {
       setCatalogs((prev) => ({ ...prev, [activeCatalogKey]: updatedList }));
       setFeedback({ type: 'success', message: 'Opțiunea a fost ștearsă din catalog.' });
     } catch (err: any) {
-      alert(err.message || 'Eroare la ștergerea opțiunii.');
+      showAlert(err.message || 'Eroare la ștergerea opțiunii.', { type: 'error', title: 'Ștergere Opțiune' });
     }
   };
 
@@ -1542,7 +1550,7 @@ export const AdminSettingsPage: React.FC = () => {
                   type="button"
                   onClick={() => {
                     navigator.clipboard.writeText('https://nurslab.ro/api/v1/payments/webhook');
-                    alert('URL-ul Webhook a fost copiat în clipboard!');
+                    showAlert('URL-ul Webhook a fost copiat în clipboard!', { type: 'success', title: 'Clipboard' });
                   }}
                   className="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold"
                 >

@@ -7,6 +7,7 @@ import {
 import { api } from '../services/api';
 import { LessonDetail, CourseDetail, Quiz, QuizResult, Note } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { useModal } from '../context/ModalContext';
 
 export const LessonPlayerPage: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -31,6 +32,7 @@ export const LessonPlayerPage: React.FC = () => {
   const [isSubmittingQuiz, setIsSubmittingQuiz] = useState(false);
 
   const { user } = useAuth();
+  const { showAlert } = useModal();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,9 +62,9 @@ export const LessonPlayerPage: React.FC = () => {
             .then(setNotes)
             .catch(() => setNotes([]));
         })
-        .catch((err) => {
+        .catch(async (err) => {
           console.error(err);
-          alert(err.message || 'Nu aveți acces la această lecție');
+          await showAlert(err.message || 'Nu aveți acces la această lecție', { type: 'error', title: 'Acces Refuzat' });
           navigate('/courses');
         })
         .finally(() => setIsLoading(false));
@@ -104,7 +106,7 @@ export const LessonPlayerPage: React.FC = () => {
       setNotes((prev) => [...prev, added]);
       setNewNoteContent('');
     } catch (err: any) {
-      alert(err.message || 'Eroare la adăugarea notiței');
+      showAlert(err.message || 'Eroare la adăugarea notiței', { type: 'error', title: 'Adăugare Notiță' });
     }
   };
 
@@ -125,7 +127,7 @@ export const LessonPlayerPage: React.FC = () => {
         setIsCompleted(true);
       }
     } catch (err: any) {
-      alert(err.message || 'Eroare la trimiterea răspunsurilor');
+      showAlert(err.message || 'Eroare la trimiterea răspunsurilor', { type: 'error', title: 'Verificare Quiz' });
     } finally {
       setIsSubmittingQuiz(false);
     }

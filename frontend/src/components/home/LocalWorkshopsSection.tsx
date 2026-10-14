@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { MapPin, BookOpen, Bell, CheckCircle2, Building, Sparkles } from 'lucide-react';
 import { api } from '../../services/api';
 import { WorkshopCity, WorkshopTopic, CMSSection } from '../../types';
+import { useModal } from '../../context/ModalContext';
 
 interface LocalWorkshopsProps {
   cmsData?: CMSSection;
 }
 
 export const LocalWorkshopsSection: React.FC<LocalWorkshopsProps> = ({ cmsData }) => {
+  const { showAlert } = useModal();
   const title = cmsData?.title || 'Adu practica în orașul tău';
   const subtitle = cmsData?.subtitle || 'Spune-ne ce te interesează și te anunțăm când se formează o grupă de workshop în orașul tău.';
   const ctaLabel = cmsData?.metadata_json?.cta_label || 'Anunță-mă când se formează grupa';
@@ -56,7 +58,7 @@ export const LocalWorkshopsSection: React.FC<LocalWorkshopsProps> = ({ cmsData }
         setPhone('');
       }, 2500);
     } catch (err: any) {
-      alert(err.message || 'A apărut o eroare la salvarea înregistrării');
+      showAlert(err.message || 'A apărut o eroare la salvarea înregistrării', { type: 'error', title: 'Înscriere Workshop' });
     } finally {
       setIsSubmitting(false);
     }

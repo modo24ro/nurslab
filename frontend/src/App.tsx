@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
+import { ModalProvider } from './context/ModalContext';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { AdminLayout } from './components/layout/AdminLayout';
@@ -58,46 +59,48 @@ export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public Layout */}
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/courses" element={<CoursesPage />} />
-              <Route path="/courses/:slug" element={<CourseDetailPage />} />
-              <Route path="/workshops" element={<WorkshopsPage />} />
-              <Route path="/home-nursing" element={<HomeNursingPage />} />
-              <Route path="/holistic" element={<HolisticCarePage />} />
-              <Route path="/webinars" element={<WebinarsPage />} />
-              <Route path="/invitati" element={<GuestsPage />} />
-              <Route path="/guests" element={<GuestsPage />} />
-              <Route path="/articles" element={<ArticlesPage />} />
-              <Route path="/articles/:slug" element={<ArticleDetailPage />} />
-              <Route path="/certificate/verify" element={<CertificateVerifyPage />} />
-              <Route path="/certificate/verify/:code" element={<CertificateVerifyPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/dashboard" element={<StudentDashboardPage />} />
-              <Route path="/pricing" element={<CheckoutPage />} />
-              <Route path="/lessons/:lessonId" element={<LessonPlayerPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
+        <ModalProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Layout */}
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/courses" element={<CoursesPage />} />
+                <Route path="/courses/:slug" element={<CourseDetailPage />} />
+                <Route path="/workshops" element={<WorkshopsPage />} />
+                <Route path="/home-nursing" element={<HomeNursingPage />} />
+                <Route path="/holistic" element={<HolisticCarePage />} />
+                <Route path="/webinars" element={<WebinarsPage />} />
+                <Route path="/invitati" element={<GuestsPage />} />
+                <Route path="/guests" element={<GuestsPage />} />
+                <Route path="/articles" element={<ArticlesPage />} />
+                <Route path="/articles/:slug" element={<ArticleDetailPage />} />
+                <Route path="/certificate/verify" element={<CertificateVerifyPage />} />
+                <Route path="/certificate/verify/:code" element={<CertificateVerifyPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/dashboard" element={<StudentDashboardPage />} />
+                <Route path="/pricing" element={<CheckoutPage />} />
+                <Route path="/lessons/:lessonId" element={<LessonPlayerPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Route>
 
-            {/* Comprehensive Admin Panel */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboardPage />} />
-              <Route path="cms" element={<AdminCMSPage />} />
-              <Route path="courses" element={<AdminCoursesPage />} />
-              <Route path="webinars" element={<AdminWebinarsPage />} />
-              <Route path="workshops" element={<AdminWorkshopsPage />} />
-              <Route path="home-nursing" element={<AdminHomeNursingPage />} />
-              <Route path="users" element={<AdminUsersPage />} />
-              <Route path="orders" element={<AdminOrdersPage />} />
-              <Route path="settings" element={<AdminSettingsPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+              {/* Comprehensive Admin Panel */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboardPage />} />
+                <Route path="cms" element={<AdminCMSPage />} />
+                <Route path="courses" element={<AdminCoursesPage />} />
+                <Route path="webinars" element={<AdminWebinarsPage />} />
+                <Route path="workshops" element={<AdminWorkshopsPage />} />
+                <Route path="home-nursing" element={<AdminHomeNursingPage />} />
+                <Route path="users" element={<AdminUsersPage />} />
+                <Route path="orders" element={<AdminOrdersPage />} />
+                <Route path="settings" element={<AdminSettingsPage />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </ModalProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

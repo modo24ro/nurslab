@@ -11,8 +11,10 @@ import { api } from '../../services/api';
 import { CourseAdmin, Category, InstructorOption, CourseSectionAdmin, LessonAdmin } from '../../types';
 import { VisualImageCropper } from '../../components/admin/VisualImageCropper';
 import { formatImageUrl, getImageStyle } from '../../utils/cms';
+import { useModal } from '../../context/ModalContext';
 
 export const AdminCoursesPage: React.FC = () => {
+  const { showConfirm } = useModal();
   const [courses, setCourses] = useState<CourseAdmin[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [instructors, setInstructors] = useState<InstructorOption[]>([]);
@@ -312,7 +314,13 @@ export const AdminCoursesPage: React.FC = () => {
 
   // Duplicate Course
   const handleDuplicateCourse = async (c: CourseAdmin) => {
-    if (!window.confirm(`Doriți să duplicați cursul "${c.title}" împreună cu structura sa de lecții?`)) return;
+    const confirmed = await showConfirm(`Doriți să duplicați cursul "${c.title}" împreună cu structura sa de lecții?`, {
+      title: 'Duplicare Curs',
+      type: 'info',
+      confirmText: 'Da, duplică',
+      cancelText: 'Anulează',
+    });
+    if (!confirmed) return;
     try {
       const dup = await api.duplicateCourse(c.id);
       setMessage({ type: 'success', text: `Cursul a fost duplicat cu succes sub numele "${dup.title}".` });
@@ -324,7 +332,13 @@ export const AdminCoursesPage: React.FC = () => {
 
   // Archive Course
   const handleArchiveCourse = async (c: CourseAdmin) => {
-    if (!window.confirm(`Doriți să arhivați cursul "${c.title}"? Nu va mai fi vizibil public.`)) return;
+    const confirmed = await showConfirm(`Doriți să arhivați cursul "${c.title}"? Nu va mai fi vizibil public.`, {
+      title: 'Arhivare Curs',
+      type: 'warning',
+      confirmText: 'Da, arhivează',
+      cancelText: 'Anulează',
+    });
+    if (!confirmed) return;
     try {
       await api.updateCourse(c.id, { status: 'archived', is_published: false });
       setMessage({ type: 'success', text: `Cursul "${c.title}" a fost arhivat.` });
@@ -380,7 +394,13 @@ export const AdminCoursesPage: React.FC = () => {
   };
 
   const handleDeleteSection = async (sectionId: string) => {
-    if (!window.confirm('Sigur doriți să ștergeți această secțiune și toate lecțiile sale?')) return;
+    const confirmed = await showConfirm('Sigur doriți să ștergeți această secțiune și toate lecțiile sale?', {
+      title: 'Ștergere Secțiune Curriculum',
+      type: 'warning',
+      confirmText: 'Da, șterge secțiunea',
+      cancelText: 'Anulează',
+    });
+    if (!confirmed) return;
     try {
       await api.deleteCourseSection(sectionId);
       const updatedList = await api.getAdminCourses();
@@ -430,7 +450,13 @@ export const AdminCoursesPage: React.FC = () => {
   };
 
   const handleDeleteLesson = async (lessonId: string) => {
-    if (!window.confirm('Sigur doriți să ștergeți această lecție?')) return;
+    const confirmed = await showConfirm('Sigur doriți să ștergeți această lecție?', {
+      title: 'Ștergere Lecție',
+      type: 'warning',
+      confirmText: 'Da, șterge lecția',
+      cancelText: 'Anulează',
+    });
+    if (!confirmed) return;
     try {
       await api.deleteLesson(lessonId);
       const updatedList = await api.getAdminCourses();

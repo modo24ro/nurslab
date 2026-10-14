@@ -4,6 +4,7 @@ import { Video, Calendar, Clock, User, CheckCircle2, ArrowRight, Play, Users, Sp
 import { api } from '../services/api';
 import { Webinar } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { useModal } from '../context/ModalContext';
 import { formatImageUrl, getImageStyle } from '../utils/cms';
 import { ReservationSuccessModal } from '../components/common/ReservationSuccessModal';
 import { usePageCMS } from '../utils/usePageCMS';
@@ -28,6 +29,7 @@ export const WebinarsPage: React.FC = () => {
   }>({ isOpen: false });
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
   const { user } = useAuth();
+  const { showAlert } = useModal();
 
   useEffect(() => {
     setIsLoading(true);
@@ -63,7 +65,7 @@ export const WebinarsPage: React.FC = () => {
         speaker: webinar.speaker?.full_name,
       });
     } catch (err: any) {
-      alert(err.message || 'Eroare la înregistrare');
+      showAlert(err.message || 'Eroare la înregistrare', { type: 'error', title: 'Înregistrare Webinar' });
     }
   };
 

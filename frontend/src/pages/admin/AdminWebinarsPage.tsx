@@ -7,6 +7,7 @@ import { api } from '../../services/api';
 import { Webinar, Speaker } from '../../types';
 import { VisualImageCropper } from '../../components/admin/VisualImageCropper';
 import { formatImageUrl, getImageStyle } from '../../utils/cms';
+import { useModal } from '../../context/ModalContext';
 
 export const AdminWebinarsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'webinars' | 'speakers'>('webinars');
@@ -243,9 +244,17 @@ export const AdminWebinarsPage: React.FC = () => {
     }
   };
 
+  const { showConfirm } = useModal();
+
   // Delete Speaker
   const handleDeleteSpeaker = async (id: string, name: string) => {
-    if (!window.confirm(`Sunteți sigur că doriți să ștergeți invitatul "${name}"?`)) return;
+    const confirmed = await showConfirm(`Sunteți sigur că doriți să ștergeți invitatul "${name}"?`, {
+      title: 'Ștergere Invitat / Lector',
+      type: 'warning',
+      confirmText: 'Da, șterge',
+      cancelText: 'Anulează',
+    });
+    if (!confirmed) return;
     try {
       await api.deleteSpeaker(id);
       setMessage({ type: 'success', text: 'Invitat șters cu succes.' });

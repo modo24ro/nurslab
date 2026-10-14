@@ -17,6 +17,7 @@ import { api } from '../../services/api';
 import { CMSSection, CMSContentBlock } from '../../types';
 import { VisualImageCropper } from '../../components/admin/VisualImageCropper';
 import { formatImageUrl } from '../../utils/cms';
+import { useModal } from '../../context/ModalContext';
 
 const getPagePublicRoute = (key: string): string => {
   switch (key) {
@@ -33,6 +34,7 @@ const getPagePublicRoute = (key: string): string => {
 };
 
 export const AdminCMSPage: React.FC = () => {
+  const { showAlert } = useModal();
   const [sections, setSections] = useState<CMSSection[]>([]);
   const [selectedSectionKey, setSelectedSectionKey] = useState<string>('hero');
   const [activeCategoryTab, setActiveCategoryTab] = useState<'home' | 'pages'>('home');
@@ -130,7 +132,7 @@ export const AdminCMSPage: React.FC = () => {
       }, 3500);
     } catch (err: any) {
       console.error('Error saving CMS section:', err);
-      alert(err.message || 'Eroare la salvarea modificărilor în baza de date');
+      showAlert(err.message || 'Eroare la salvarea modificărilor în baza de date', { type: 'error', title: 'Salvare CMS' });
     } finally {
       setIsSaving(false);
     }
@@ -168,7 +170,7 @@ export const AdminCMSPage: React.FC = () => {
         setStatusMessage(null);
       }, 3000);
     } catch (err: any) {
-      alert(err.message || 'Eroare la salvarea cardului');
+      showAlert(err.message || 'Eroare la salvarea cardului', { type: 'error', title: 'Salvare Card CMS' });
     }
   };
 

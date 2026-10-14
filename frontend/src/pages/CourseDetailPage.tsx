@@ -4,6 +4,7 @@ import { BookOpen, Clock, Award, ShieldCheck, PlayCircle, CheckCircle2, ChevronD
 import { api } from '../services/api';
 import { CourseDetail } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { useModal } from '../context/ModalContext';
 import { formatImageUrl, getImageStyle } from '../utils/cms';
 
 export const CourseDetailPage: React.FC = () => {
@@ -12,6 +13,7 @@ export const CourseDetailPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
   const { user } = useAuth();
+  const { showAlert } = useModal();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export const CourseDetailPage: React.FC = () => {
         navigate('/dashboard');
       }
     } catch (err: any) {
-      alert(err.message || 'Eroare la înscriere');
+      showAlert(err.message || 'Eroare la înscriere', { type: 'error', title: 'Înscriere Curs' });
     } finally {
       setEnrolling(false);
     }

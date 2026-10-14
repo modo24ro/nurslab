@@ -4,12 +4,14 @@ import { api } from '../../services/api';
 import { CMSSection } from '../../types';
 
 import { formatImageUrl, getImageStyle } from '../../utils/cms';
+import { useModal } from '../../context/ModalContext';
 
 interface HomeNursingProps {
   cmsData?: CMSSection;
 }
 
 export const HomeNursingSection: React.FC<HomeNursingProps> = ({ cmsData }) => {
+  const { showAlert } = useModal();
   const title = cmsData?.title || 'Îngrijiri la domiciliu';
   const subtitle = cmsData?.subtitle || 'Sprijin și îngrijire, în confortul casei tale.';
   const microcopy = cmsData?.metadata_json?.microcopy || 'Trimite o solicitare pentru detalii și disponibilitate.';
@@ -54,7 +56,7 @@ export const HomeNursingSection: React.FC<HomeNursingProps> = ({ cmsData }) => {
         setPatientCondition('');
       }, 2500);
     } catch (err: any) {
-      alert(err.message || 'A apărut o eroare la trimiterea solicitării');
+      showAlert(err.message || 'A apărut o eroare la trimiterea solicitării', { type: 'error', title: 'Solicitare Îngrijiri' });
     } finally {
       setIsSubmitting(false);
     }

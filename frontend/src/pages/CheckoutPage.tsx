@@ -4,6 +4,7 @@ import { CreditCard, ShieldCheck, CheckCircle2, Lock, ArrowRight, Building, User
 import { api } from '../services/api';
 import { Course, PricingPlan } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { useModal } from '../context/ModalContext';
 
 export const CheckoutPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -58,10 +59,15 @@ export const CheckoutPage: React.FC = () => {
     }
   }, [courseId, planId]);
 
+  const { showAlert } = useModal();
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      alert('Vă rugăm să vă autentificați pentru a finaliza comanda.');
+      await showAlert('Vă rugăm să vă autentificați pentru a finaliza comanda.', {
+        type: 'warning',
+        title: 'Autentificare Necesară',
+      });
       navigate('/login');
       return;
     }
@@ -92,7 +98,10 @@ export const CheckoutPage: React.FC = () => {
 
       setOrderComplete(orderData);
     } catch (err: any) {
-      alert(err.message || 'Eroare la procesarea plății');
+      await showAlert(err.message || 'Eroare la procesarea plății', {
+        type: 'error',
+        title: 'Eroare Tranzacție',
+      });
     } finally {
       setIsProcessing(false);
     }
