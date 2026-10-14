@@ -332,7 +332,7 @@ export const AdminSettingsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
+      <div className="w-full p-8 flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3 text-slate-500">
           <RefreshCw className="w-8 h-8 animate-spin text-brand-green" />
           <p className="font-medium text-sm">Se încarcă modulul de configurare centralizat...</p>
@@ -342,7 +342,7 @@ export const AdminSettingsPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
+    <div className="w-full space-y-8">
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
