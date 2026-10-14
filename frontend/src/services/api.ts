@@ -109,6 +109,12 @@ export const api = {
   getWorkshopTopics: () => request<any[]>('/workshops/topics'),
   submitWorkshopInterest: (data: any) => request<any>('/workshops/interest', { method: 'POST', body: JSON.stringify(data) }),
   getAdminWorkshopRegistrations: () => request<any[]>('/workshops/admin/registrations'),
+  createAdminWorkshopRegistration: (data: any) =>
+    request<any>('/workshops/admin/registrations', { method: 'POST', body: JSON.stringify(data) }),
+  updateAdminWorkshopRegistration: (id: string, data: any) =>
+    request<any>(`/workshops/admin/registrations/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteAdminWorkshopRegistration: (id: string) =>
+    request<any>(`/workshops/admin/registrations/${id}`, { method: 'DELETE' }),
   updateWorkshopRegistrationStatus: (id: string, status: string) =>
     request<any>(`/workshops/admin/registrations/${id}/status?status_str=${status}`, { method: 'PUT' }),
 
@@ -116,6 +122,12 @@ export const api = {
   getHomeNursingServices: () => request<any[]>('/home-nursing/services'),
   submitHomeNursingRequest: (data: any) => request<any>('/home-nursing/request', { method: 'POST', body: JSON.stringify(data) }),
   getAdminHomeNursingRequests: () => request<any[]>('/home-nursing/admin/requests'),
+  createAdminHomeNursingRequest: (data: any) =>
+    request<any>('/home-nursing/admin/requests', { method: 'POST', body: JSON.stringify(data) }),
+  updateAdminHomeNursingRequest: (id: string, data: any) =>
+    request<any>(`/home-nursing/admin/requests/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteAdminHomeNursingRequest: (id: string) =>
+    request<any>(`/home-nursing/admin/requests/${id}`, { method: 'DELETE' }),
   updateHomeNursingStatus: (id: string, status: string) =>
     request<any>(`/home-nursing/admin/requests/${id}/status?status_str=${status}`, { method: 'PUT' }),
 
@@ -149,9 +161,22 @@ export const api = {
     const qs = search ? `?search=${search}` : '';
     return request<any[]>(`/admin/users${qs}`);
   },
+  createAdminUser: (data: any) =>
+    request<any>('/admin/users', { method: 'POST', body: JSON.stringify(data) }),
+  updateAdminUser: (userId: string, data: any) =>
+    request<any>(`/admin/users/${userId}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteAdminUser: (userId: string) =>
+    request<any>(`/admin/users/${userId}`, { method: 'DELETE' }),
   updateUserRole: (userId: string, role: string) =>
     request<any>(`/admin/users/${userId}/role?new_role=${role}`, { method: 'PUT' }),
   getAdminOrders: () => request<any[]>('/admin/orders'),
+  createAdminOrder: (data: any) =>
+    request<any>('/admin/orders', { method: 'POST', body: JSON.stringify(data) }),
+  updateAdminOrder: (orderId: string, data: any) =>
+    request<any>(`/admin/orders/${orderId}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteAdminOrder: (orderId: string) =>
+    request<any>(`/admin/orders/${orderId}`, { method: 'DELETE' }),
+
 
   // Media
   uploadMedia: (formData: FormData) => request<any>('/media/upload', { method: 'POST', body: formData }),

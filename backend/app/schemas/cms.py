@@ -93,3 +93,28 @@ class AdminDashboardStats(BaseModel):
     pending_workshop_leads: int
     pending_home_nursing_leads: int
     certificates_issued: int
+    # Extended stats
+    students_count: int = 0
+    instructors_count: int = 0
+    admins_count: int = 0
+    paid_orders_count: int = 0
+    pending_orders_count: int = 0
+    failed_orders_count: int = 0
+    average_order_value_ron: float = 0.0
+    free_courses_count: int = 0
+    paid_courses_count: int = 0
+    total_lessons_count: int = 0
+    total_webinars: int = 0
+    upcoming_webinars: int = 0
+    total_workshop_registrations: int = 0
+    contacted_workshop_leads: int = 0
+    enrolled_workshop_leads: int = 0
+    total_home_nursing_requests: int = 0
+    scheduled_home_nursing: int = 0
+    completed_home_nursing: int = 0
+    urgent_home_nursing: int = 0
+    # Feeds
+    recent_orders: List[Dict[str, Any]] = []
+    recent_users: List[Dict[str, Any]] = []
+    recent_leads: List[Dict[str, Any]] = []
+

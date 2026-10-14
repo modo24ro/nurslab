@@ -54,11 +54,54 @@ class OrderResponse(BaseModel):
     payment_method: str
     customer_name: str
     billing_email: str
+    billing_phone: Optional[str] = None
+    billing_type: str = "individual"
+    company_name: Optional[str] = None
+    company_cui: Optional[str] = None
+    company_reg_com: Optional[str] = None
+    billing_address: Optional[str] = None
+    billing_city: Optional[str] = None
+    billing_country: str = "Romania"
     created_at: datetime
     items: List[OrderItemResponse] = []
 
     class Config:
         from_attributes = True
+
+class OrderCreateAdmin(BaseModel):
+    customer_name: str
+    billing_email: EmailStr
+    billing_phone: Optional[str] = None
+    billing_type: str = "individual"
+    company_name: Optional[str] = None
+    company_cui: Optional[str] = None
+    company_reg_com: Optional[str] = None
+    billing_address: str
+    billing_city: str
+    billing_country: str = "Romania"
+    total_amount: Decimal
+    currency: str = "RON"
+    status: OrderStatus = OrderStatus.PAID
+    payment_method: str = "card"
+    item_title: Optional[str] = "Servicii Educaționale NursLab"
+    item_type: Optional[str] = "course"
+
+class OrderUpdateAdmin(BaseModel):
+    customer_name: Optional[str] = None
+    billing_email: Optional[EmailStr] = None
+    billing_phone: Optional[str] = None
+    billing_type: Optional[str] = None
+    company_name: Optional[str] = None
+    company_cui: Optional[str] = None
+    company_reg_com: Optional[str] = None
+    billing_address: Optional[str] = None
+    billing_city: Optional[str] = None
+    billing_country: Optional[str] = None
+    total_amount: Optional[Decimal] = None
+    currency: Optional[str] = None
+    status: Optional[OrderStatus] = None
+    payment_method: Optional[str] = None
+
 
 class SubscriptionResponse(BaseModel):
     id: str

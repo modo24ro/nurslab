@@ -213,6 +213,7 @@ export interface HomeNursingRequest {
   urgency_level: string;
   preferred_date?: string;
   status: string;
+  admin_notes?: string;
   created_at: string;
 }
 
@@ -415,6 +416,35 @@ export interface Invoice {
   company_cui?: string;
 }
 
+export interface OrderItem {
+  id: string;
+  item_type: string;
+  item_id: string;
+  title: string;
+  unit_price: number;
+}
+
+export interface AdminOrder {
+  id: string;
+  order_number: string;
+  total_amount: number;
+  currency: string;
+  status: 'pending' | 'paid' | 'failed' | 'refunded';
+  payment_method: string;
+  customer_name: string;
+  billing_email: string;
+  billing_phone?: string;
+  billing_type: 'individual' | 'company';
+  company_name?: string;
+  company_cui?: string;
+  company_reg_com?: string;
+  billing_address?: string;
+  billing_city?: string;
+  billing_country?: string;
+  created_at: string;
+  items: OrderItem[];
+}
+
 export interface AdminStats {
   total_users: number;
   active_subscribers: number;
@@ -424,6 +454,29 @@ export interface AdminStats {
   pending_workshop_leads: number;
   pending_home_nursing_leads: number;
   certificates_issued: number;
+  // Extended metrics
+  students_count?: number;
+  instructors_count?: number;
+  admins_count?: number;
+  paid_orders_count?: number;
+  pending_orders_count?: number;
+  failed_orders_count?: number;
+  average_order_value_ron?: number;
+  free_courses_count?: number;
+  paid_courses_count?: number;
+  total_lessons_count?: number;
+  total_webinars?: number;
+  upcoming_webinars?: number;
+  total_workshop_registrations?: number;
+  contacted_workshop_leads?: number;
+  enrolled_workshop_leads?: number;
+  total_home_nursing_requests?: number;
+  scheduled_home_nursing?: number;
+  completed_home_nursing?: number;
+  urgent_home_nursing?: number;
+  recent_orders?: any[];
+  recent_users?: any[];
+  recent_leads?: any[];
 }
 
 export interface SettingItem {

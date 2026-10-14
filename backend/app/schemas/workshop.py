@@ -41,3 +41,22 @@ class WorkshopInterestResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class WorkshopInterestAdminCreate(BaseModel):
+    full_name: str
+    email: EmailStr
+    phone: str
+    city_name: str
+    topic_title: str
+    notes: Optional[str] = None
+    status: str = "new"
+
+class WorkshopInterestAdminUpdate(BaseModel):
+    full_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    city_name: Optional[str] = None
+    topic_title: Optional[str] = None
+    notes: Optional[str] = None
+    status: Optional[str] = None
+
