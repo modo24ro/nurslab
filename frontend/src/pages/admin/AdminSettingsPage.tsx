@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import {
   Settings, Globe, Mail, Building2, CreditCard, Layers, ShieldCheck,
   Save, RefreshCw, Plus, Edit2, Trash2, CheckCircle2, AlertTriangle,
@@ -9,9 +10,44 @@ import { api } from '../../services/api';
 import { CategoryAdmin, CatalogOption } from '../../types';
 
 type SettingsTab = 'general' | 'categories' | 'email' | 'billing' | 'payments' | 'system';
+const VALID_TABS: SettingsTab[] = ['general', 'categories', 'email', 'billing', 'payments', 'system'];
 
 export const AdminSettingsPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<SettingsTab>('general');
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Extract initial tab from URL query (?tab=... / ?tag=...) or hash (#...)
+  const getTabFromUrl = useCallback((): SettingsTab => {
+    const fromQuery = (searchParams.get('tab') || searchParams.get('tag')) as SettingsTab | null;
+    if (fromQuery && VALID_TABS.includes(fromQuery)) {
+      return fromQuery;
+    }
+    const fromHash = location.hash.replace(/^#/, '') as SettingsTab;
+    if (fromHash && VALID_TABS.includes(fromHash)) {
+      return fromHash;
+    }
+    return 'general';
+  }, [searchParams, location.hash]);
+
+  const [activeTab, setActiveTab] = useState<SettingsTab>(getTabFromUrl);
+
+  // Sync tab with URL when browser history navigation happens
+  useEffect(() => {
+    const targetTab = getTabFromUrl();
+    if (targetTab && targetTab !== activeTab) {
+      setActiveTab(targetTab);
+    }
+  }, [getTabFromUrl, activeTab]);
+
+  const handleTabChange = (tabId: SettingsTab) => {
+    setActiveTab(tabId);
+    navigate({
+      pathname: '/admin/settings',
+      search: `?tab=${tabId}`,
+      hash: `#${tabId}`,
+    }, { replace: true });
+  };
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -444,7 +480,7 @@ export const AdminSettingsPage: React.FC = () => {
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as SettingsTab)}
+              onClick={() => handleTabChange(tab.id as SettingsTab)}
               className={`flex items-center gap-2 px-4 py-3 border-b-2 text-sm font-semibold whitespace-nowrap transition-all ${
                 isActive
                   ? 'border-brand-green text-brand-navy bg-white/60 rounded-t-xl shadow-xs'
