@@ -408,7 +408,7 @@ export const AdminSettingsPage: React.FC = () => {
         </div>
 
         {/* Global Action Buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
           {hasUnsavedChanges && (
             <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200 animate-pulse">
               <AlertTriangle className="w-3.5 h-3.5" />
@@ -494,7 +494,7 @@ export const AdminSettingsPage: React.FC = () => {
       {/* TAB 1: GENERAL WEBSITE SETTINGS */}
       {activeTab === 'general' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-slate-200/80 shadow-sm space-y-6">
             <div className="border-b border-slate-100 pb-4">
               <h2 className="text-lg font-serif font-bold text-slate-900">
                 Informații Generale & Identitate Publică
@@ -549,7 +549,7 @@ export const AdminSettingsPage: React.FC = () => {
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Limbă Implicită & Fus Orar
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <select
                     value={formValues['general_default_language'] || 'ro'}
                     onChange={(e) => handleFieldChange('general_default_language', e.target.value)}
@@ -752,7 +752,7 @@ export const AdminSettingsPage: React.FC = () => {
       {activeTab === 'categories' && (
         <div className="space-y-8">
           {/* Categories Management Panel */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-slate-200/80 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
                 <h2 className="text-lg font-serif font-bold text-slate-900">
@@ -885,7 +885,7 @@ export const AdminSettingsPage: React.FC = () => {
           </div>
 
           {/* Reusable Catalogs Management Panel */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-slate-200/80 shadow-sm space-y-6">
             <div className="border-b border-slate-100 pb-4">
               <h2 className="text-lg font-serif font-bold text-slate-900">
                 Cataloage & Liste Reutilizabile în Formulare
@@ -979,7 +979,7 @@ export const AdminSettingsPage: React.FC = () => {
       {/* TAB 3: EMAIL SERVER & SMTP */}
       {activeTab === 'email' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-slate-200/80 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
                 <h2 className="text-lg font-serif font-bold text-slate-900">
@@ -1146,7 +1146,7 @@ export const AdminSettingsPage: React.FC = () => {
       {/* TAB 4: BILLING & ORGANIZATION */}
       {activeTab === 'billing' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-slate-200/80 shadow-sm space-y-6">
             <div className="border-b border-slate-100 pb-4">
               <h2 className="text-lg font-serif font-bold text-slate-900">
                 Profil Juridic, Date Fiscale & Emitere Facturi
@@ -1213,7 +1213,7 @@ export const AdminSettingsPage: React.FC = () => {
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Oraș & Județ
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
                     type="text"
                     value={formValues['billing_city'] || ''}
@@ -1235,7 +1235,7 @@ export const AdminSettingsPage: React.FC = () => {
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
                   Țară & Cod Poștal
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
                     type="text"
                     value={formValues['billing_country'] || 'România'}
@@ -1355,7 +1355,7 @@ export const AdminSettingsPage: React.FC = () => {
       {/* TAB 5: PAYMENT PROVIDER & STRIPE */}
       {activeTab === 'payments' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-slate-200/80 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
               <div>
                 <h2 className="text-lg font-serif font-bold text-slate-900">
@@ -1568,7 +1568,7 @@ export const AdminSettingsPage: React.FC = () => {
       {/* TAB 6: SYSTEM, SECURITY & INTEGRATIONS */}
       {activeTab === 'system' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+          <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-slate-200/80 shadow-sm space-y-6">
             <div className="border-b border-slate-100 pb-4">
               <h2 className="text-lg font-serif font-bold text-slate-900">
                 Sistem, Încărcări Media & Instrumente Analytics

@@ -218,7 +218,7 @@ export const AdminUsersPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold text-brand-green uppercase tracking-wider">Securitate & Permisiuni</span>
-          <h1 className="text-3xl font-serif font-bold text-brand-navy">Utilizatori & Permisiuni</h1>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-brand-navy">Utilizatori & Permisiuni</h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Gestiune conturi cursanți, asistenți medicali, formatori clinici și administratori de sistem.
           </p>
@@ -234,7 +234,7 @@ export const AdminUsersPage: React.FC = () => {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-[11px] font-bold uppercase tracking-wider">Total Utilizatori</span>
@@ -363,7 +363,7 @@ export const AdminUsersPage: React.FC = () => {
       {/* Users Table */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[740px] text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
               <tr>
                 <th className="p-4">Utilizator</th>

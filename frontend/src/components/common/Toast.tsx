@@ -24,7 +24,7 @@ export const Toast: React.FC<ToastProps> = ({
   }, [duration, onClose]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 max-w-md w-auto animate-in fade-in slide-in-from-bottom-5 duration-300">
+    <div className="fixed bottom-20 lg:bottom-6 left-4 right-4 sm:left-auto sm:right-6 z-50 sm:max-w-md w-auto animate-in fade-in slide-in-from-bottom-5 duration-300">
       <div
         className={`flex items-center gap-3.5 px-5 py-4 rounded-2xl shadow-2xl border backdrop-blur-md transition-all ${
           type === 'success'

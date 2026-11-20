@@ -31,7 +31,7 @@ export const AdminDashboardPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold text-brand-green uppercase tracking-wider">Tablou de Bord Executiv</span>
-          <h1 className="text-3xl font-serif font-bold text-brand-navy">Prezentare Generală Platformă</h1>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-brand-navy">Prezentare Generală Platformă</h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Monitorizare în timp real a indicatorilor educaționali, financiari, resurselor clinice și solicitărilor medicale.
           </p>
@@ -150,18 +150,18 @@ export const AdminDashboardPage: React.FC = () => {
       {/* Secondary Operations Grid: Workshopuri & Îngrijiri la Domiciliu */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Workshopuri Fizice în Orașe */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-brand-green-mint text-brand-green flex items-center justify-center">
+        <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-2xl bg-brand-green-mint text-brand-green flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="font-serif font-bold text-base text-brand-navy">Workshopuri Practice în Orașe</h3>
                 <p className="text-xs text-slate-500">Leads și asistenți medicali înregistrați pe orașe</p>
               </div>
             </div>
-            <span className="badge-mint text-xs font-bold px-3 py-1">
+            <span className="badge-mint text-xs font-bold px-3 py-1 shrink-0">
               {stats?.pending_workshop_leads || 0} noi
             </span>
           </div>
@@ -181,11 +181,11 @@ export const AdminDashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-1">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
             <span className="text-xs text-slate-500">Organizare ateliere București, Cluj, Timișoara, Iași</span>
             <Link
               to="/admin/workshops"
-              className="btn-primary text-xs px-4 py-2 inline-flex items-center gap-1.5 font-bold shadow-xs"
+              className="btn-primary text-xs px-4 py-2 inline-flex items-center justify-center gap-1.5 font-bold shadow-xs shrink-0"
             >
               <span>Gestionează Înscrierile</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -194,23 +194,23 @@ export const AdminDashboardPage: React.FC = () => {
         </div>
 
         {/* Solicitări Îngrijiri la Domiciliu */}
-        <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-rose-50 text-brand-red flex items-center justify-center">
+        <div className="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-2xl bg-rose-50 text-brand-red flex items-center justify-center shrink-0">
                 <HeartHandshake className="w-5 h-5" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <h3 className="font-serif font-bold text-base text-brand-navy">Solicitări Îngrijiri la Domiciliu</h3>
                 <p className="text-xs text-slate-500">Tratamente, pansamente plăgi și vizite la pat</p>
               </div>
             </div>
             {Number(stats?.urgent_home_nursing || 0) > 0 ? (
-              <span className="badge-coral text-xs font-bold px-3 py-1 inline-flex items-center gap-1">
+              <span className="badge-coral text-xs font-bold px-3 py-1 inline-flex items-center gap-1 shrink-0">
                 <AlertCircle className="w-3 h-3" /> {stats?.urgent_home_nursing} Urgențe
               </span>
             ) : (
-              <span className="badge-mint text-xs font-bold px-3 py-1">
+              <span className="badge-mint text-xs font-bold px-3 py-1 shrink-0">
                 {stats?.pending_home_nursing_leads || 0} în așteptare
               </span>
             )}
@@ -231,11 +231,11 @@ export const AdminDashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-1">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
             <span className="text-xs text-slate-500">Triaj și alocare asistenți medicali pe teren</span>
             <Link
               to="/admin/home-nursing"
-              className="btn-primary text-xs px-4 py-2 inline-flex items-center gap-1.5 font-bold shadow-xs"
+              className="btn-primary text-xs px-4 py-2 inline-flex items-center justify-center gap-1.5 font-bold shadow-xs shrink-0"
             >
               <span>Gestionează Solicitările</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -316,7 +316,7 @@ export const AdminDashboardPage: React.FC = () => {
                 >
                   <div className="min-w-0">
                     <div className="font-bold text-slate-900 truncate">{o.customer_name}</div>
-                    <div className="text-[11px] text-slate-500 font-mono">{o.order_number} • {o.billing_email}</div>
+                    <div className="text-[11px] text-slate-500 font-mono truncate">{o.order_number} • {o.billing_email}</div>
                   </div>
                   <div className="text-right shrink-0">
                     <div className="font-bold text-slate-900">{Number(o.total_amount).toFixed(2)} {o.currency}</div>
@@ -362,7 +362,7 @@ export const AdminDashboardPage: React.FC = () => {
                 >
                   <div className="min-w-0">
                     <div className="font-bold text-slate-900 truncate">{u.full_name}</div>
-                    <div className="text-[11px] text-slate-500">{u.email}</div>
+                    <div className="text-[11px] text-slate-500 truncate">{u.email}</div>
                   </div>
                   <div className="text-right shrink-0">
                     <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-200/80 text-slate-800 uppercase">

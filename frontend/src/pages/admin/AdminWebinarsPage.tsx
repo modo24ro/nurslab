@@ -334,7 +334,7 @@ export const AdminWebinarsPage: React.FC = () => {
 
       {/* Tabs and Search */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <button
             onClick={() => { setActiveTab('webinars'); setSearchQuery(''); }}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
@@ -381,7 +381,7 @@ export const AdminWebinarsPage: React.FC = () => {
             <div className="p-12 text-center text-slate-500 text-sm">Nu a fost găsit niciun webinar.</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-600">
+              <table className="w-full min-w-[680px] text-left text-xs text-slate-600">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4">Webinar</th>
@@ -502,7 +502,7 @@ export const AdminWebinarsPage: React.FC = () => {
             <div className="p-12 text-center text-slate-500 text-sm">Nu a fost găsit niciun invitat.</div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-600">
+              <table className="w-full min-w-[680px] text-left text-xs text-slate-600">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px] tracking-wider">
                   <tr>
                     <th className="px-6 py-4">Invitat</th>
@@ -722,7 +722,7 @@ export const AdminWebinarsPage: React.FC = () => {
                 </label>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+              <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
                 {editingWebinar ? (
                   <button
                     type="button"

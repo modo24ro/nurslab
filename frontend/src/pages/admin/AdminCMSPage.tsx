@@ -268,7 +268,7 @@ export const AdminCMSPage: React.FC = () => {
     <div className="space-y-8">
       
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-3xl border border-slate-200/80 shadow-xs">
         <div>
           <span className="text-xs font-bold text-brand-green uppercase tracking-wider flex items-center gap-1.5">
             <Layers className="w-3.5 h-3.5" />
@@ -282,7 +282,7 @@ export const AdminCMSPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
           <a
             href={activeSection ? getPagePublicRoute(activeSection.section_key) : '/'}
             target="_blank"
@@ -650,7 +650,7 @@ export const AdminCMSPage: React.FC = () => {
 
                     {/* Banner Image & Visual Cropper */}
                     <div className="bg-white p-4 rounded-2xl border border-slate-200/80 space-y-3">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                         <div className="flex items-center gap-2">
                           <ImageIcon className="w-4 h-4 text-[#0284C7]" />
                           <h4 className="font-serif font-bold text-sm text-brand-navy">
@@ -747,7 +747,7 @@ export const AdminCMSPage: React.FC = () => {
             {/* Content Blocks List (Cards) */}
             {activeSection.blocks && activeSection.blocks.length > 0 && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between px-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 px-2">
                   <h3 className="font-serif font-bold text-xl text-brand-navy">
                     Carduri & Pași în Secțiune ({activeSection.blocks.length})
                   </h3>
@@ -760,9 +760,9 @@ export const AdminCMSPage: React.FC = () => {
                   {activeSection.blocks.map((b, idx) => (
                     <div
                       key={b.id}
-                      className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-6 sm:p-7 space-y-5"
+                      className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-6 lg:p-7 space-y-5"
                     >
-                      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
                         <div className="flex items-center gap-2">
                           <span className="w-6 h-6 rounded-full bg-brand-green text-white text-xs font-bold flex items-center justify-center">
                             {idx + 1}

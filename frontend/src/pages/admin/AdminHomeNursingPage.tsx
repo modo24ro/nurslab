@@ -246,7 +246,7 @@ export const AdminHomeNursingPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold text-brand-green uppercase tracking-wider">Servicii Clinice Mobile</span>
-          <h1 className="text-3xl font-serif font-bold text-brand-navy">Solicitări Îngrijiri la Domiciliu</h1>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-brand-navy">Solicitări Îngrijiri la Domiciliu</h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Gestiune cereri pacienți, planificare asistenți medicali, tratamente injectabile și pansamente.
           </p>
@@ -262,7 +262,7 @@ export const AdminHomeNursingPage: React.FC = () => {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-[11px] font-bold uppercase tracking-wider">Total Cereri</span>
@@ -414,7 +414,7 @@ export const AdminHomeNursingPage: React.FC = () => {
       {/* Requests Table */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full min-w-[820px] text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
               <tr>
                 <th className="p-4">Nume Solicitant & Pacient</th>

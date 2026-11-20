@@ -616,7 +616,7 @@ export const AdminCoursesPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold text-brand-green uppercase tracking-wider">LMS Management & Curriculum</span>
-          <h1 className="text-3xl font-serif font-bold text-brand-navy">Gestionare Cursuri Medicale</h1>
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-brand-navy">Gestionare Cursuri Medicale</h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Creează, editează, duplică și publică programele de instruire clinică, modulele și lecțiile video.
           </p>
@@ -714,7 +714,7 @@ export const AdminCoursesPage: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
+            <table className="w-full min-w-[740px] text-left text-xs text-slate-600">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px] tracking-wider">
                 <tr>
                   <th className="px-6 py-4">Curs</th>
