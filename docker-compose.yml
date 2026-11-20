@@ -22,7 +22,7 @@ services:
     container_name: nurslab_redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - nurslab_redis_data:/data
     healthcheck:

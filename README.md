@@ -78,7 +78,7 @@ docker compose up --build -d
 - **Frontend Web**: [http://localhost:3000](http://localhost:3000)
 - **Backend API & Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - **PostgreSQL**: Port 5432 (`nurslab_db`)
-- **Redis**: Port 6379
+- **Redis**: Port 6380
 
 ### 3. Conturi Pre-configurate pentru Testare
 | Rol | Email | Parolă | Acces |
